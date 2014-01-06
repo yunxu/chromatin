@@ -1,0 +1,68 @@
+#reinitialize
+set label_position, [2, 1, 0]
+set label_font_id , 8
+set sphere_scale, 0.5
+
+#load GM.1.pdb, GM
+#load K.1.pdb, K
+#align GM, K
+
+#load GM.14-20.1.pdb
+#load K.14-20.1.pdb
+
+
+#viewport 800,600
+set grid_mode, 1
+spectrum b
+
+sele r6, resi 6 and name ca
+sele r12, resi 12 and name ca
+sele r14, resi 14 and name ca
+sele r15, resi 15 and name ca
+sele r17, resi 17 and name ca
+sele r20, resi 20 and name ca
+sele r21, resi 21 and name ca
+sele r26, resi 26 and name ca
+sele r31, resi 31 and name ca
+sele r39, resi 39 and name ca
+sele r40, resi 40 and name ca
+sele r41, resi 41 and name ca
+
+# label r6 , "POLR3K_RHBDF1"
+# label r12, "HS48"
+# label r14, "HS48_HS40" 
+# label r15, "HS33"
+# label r17, "HS10"
+# label r20, "A2_HBQ1"
+# label r21, "HBQ1_LUC7L"
+# label r26, "LUC7L_ITFG3"
+# label r31, "RGS11_AXIN1"
+# label r39, "AXIN1"
+# label r40, "MRPL28_TMEM8"
+# label r41, "TMEM8_LOC100.."
+
+# show sphere, r6 + r12 + r14 + r15 + r17 + r20 + r21 + r26 + r31 + r39 + r40 + r41
+sele knowgene, r6 + r12 + r14 + r15 + r17 + r20 + r21 + r26 + r31 + r39 + r40 + r41
+
+#color red, r20
+show sphere, r20
+label r20, "A2"
+
+sele r35, resi 35
+label r35, resi
+show sphere, r35
+
+sele r53, resi 53
+label r53, resi
+show sphere, r53
+#color pink, r53
+
+sele r24, resi 24
+label r24, resi
+show sphere, r24
+#color yellow, r24
+
+sele r14, resi 14
+label r14, "HS40" 
+show sphere, r14
+#color purple, r14

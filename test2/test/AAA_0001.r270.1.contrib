@@ -1,0 +1,60 @@
+# No cusp correction.
+#
+#  file: AAA_0001.r270,   with solv rad: 2.700000
+#  individual area contributions to SPACE FILLING.
+#
+#			       Vert     SA	MS 
+ATOM      1 CA   ALA A   1        1  	36.3483	73.8887
+ATOM      2 CA   ALA A   2        2  	66.2808	45.9231
+ATOM      3 CA   ALA A   3        3  	29.9360	28.3132
+ATOM      4 CA   ALA A   4        4  	0.3587	18.1592
+ATOM      5 CA   ALA A   5        5  	221.6708	28.2743
+ATOM      6 CA   ALA A   6        6  	89.9485	41.6390
+ATOM      7 CA   ALA A   7        7  	12.7912	35.5784
+ATOM      8 CA   ALA A   8        8  	23.2766	51.5251
+ATOM      9 CA   ALA A   9        9  	0.0000	0.0000
+ATOM     10 CA   ALA A  10       10  	35.5645	27.2695
+ATOM     11 CA   ALA A  11       11  	1.6866	24.7939
+ATOM     12 CA   ALA A  12       12  	86.9255	40.8408
+ATOM     13 CA   ALA A  13       13  	34.2820	32.7145
+ATOM     14 CA   ALA A  14       14  	94.8514	45.6267
+ATOM     15 CA   ALA A  15       15  	5.3574	22.1849
+ATOM     16 CA   ALA A  16       16  	217.4882	47.8110
+ATOM     17 CA   ALA A  17       17  	114.7386	41.0860
+ATOM     18 CA   ALA A  18       18  	221.6708	28.2743
+ATOM     19 CA   ALA A  19       19  	199.6852	29.9737
+ATOM     20 CA   ALA A  20       20  	42.0657	28.5738
+ATOM     21 CA   ALA A  21       21  	85.0350	31.0090
+ATOM     22 CA   ALA A  22       22  	111.8557	82.5842
+ATOM     23 CA   ALA A  23       23  	121.6014	36.1684
+ATOM     24 CA   ALA A  24       24  	71.8062	28.4758
+ATOM     25 CA   ALA A  25       25  	140.5822	83.1708
+ATOM     26 CA   ALA A  26       26  	220.2538	57.6569
+ATOM     27 CA   ALA A  27       27  	14.3210	43.6894
+ATOM     28 CA   ALA A  28       28  	33.0497	32.2777
+ATOM     29 CA   ALA A  29       29  	70.4048	50.0463
+ATOM     30 CA   ALA A  30       30  	26.8181	39.4740
+ATOM     31 CA   ALA A  31       31  	52.6109	59.0453
+ATOM     32 CA   ALA A  32       32  	29.3380	56.8541
+ATOM     33 CA   ALA A  33       33  	75.1037	48.5029
+ATOM     34 CA   ALA A  34       34  	65.5284	73.1302
+ATOM     35 CA   ALA A  35       35  	1.3473	35.3229
+ATOM     36 CA   ALA A  36       36  	38.5906	21.4529
+ATOM     37 CA   ALA A  37       37  	114.4951	32.6778
+ATOM     38 CA   ALA A  38       38  	43.4869	39.1582
+ATOM     39 CA   ALA A  39       39  	221.6708	28.2743
+ATOM     40 CA   ALA A  40       40  	8.4834	13.2554
+ATOM     41 CA   ALA A  41       41  	174.9906	31.6731
+ATOM     42 CA   ALA A  42       42  	55.5499	67.8966
+ATOM     43 CA   ALA A  43       43  	179.7124	78.6503
+ATOM     44 CA   ALA A  44       44  	198.2488	33.7442
+ATOM     45 CA   ALA A  45       45  	73.5133	49.4820
+ATOM     46 CA   ALA A  46       46  	31.0350	42.4452
+ATOM     47 CA   ALA A  47       47  	112.6870	70.5206
+ATOM     48 CA   ALA A  48       48  	158.1430	66.3026
+ATOM     49 CA   ALA A  49       49  	160.5642	81.9203
+ATOM     50 CA   ALA A  50       50  	221.6708	28.2743
+ATOM     51 CA   ALA A  51       51  	221.6708	28.2743
+ATOM     52 CA   ALA A  52       52  	42.0609	76.1592
+ATOM     53 CA   ALA A  53       53  	6.4369	15.0307
+ATOM     54 CA   ALA A  54       54  	38.7823	27.9010

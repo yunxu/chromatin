@@ -1,0 +1,2608 @@
+Call
+Call = m1$call
+eval.parent(Call)
+n.s
+n.s[i]/60
+cv.glm.bionomial = function (data, glmfit, cost = function(y, yhat) mean((y - yhat)^2), #
+    K = n){#
+	call <- match.call()#
+	if (!exists(".Random.seed", envir = .GlobalEnv, inherits = FALSE)) #
+	    runif(1)#
+	seed <- get(".Random.seed", envir = .GlobalEnv, inherits = FALSE)#
+	n <- nrow(data)#
+	out <- NULL#
+	if ((K > n) || (K <= 1)) #
+	    stop("K outside allowable range")#
+	K.o <- K#
+	K <- round(K)#
+	kvals <- unique(round(n/(1L:floor(n/2))))#
+	temp <- abs(kvals - K)#
+	if (!any(temp == 0)) #
+	    K <- kvals[temp == min(temp)][1L]#
+	if (K != K.o) #
+	    warning("K has been set to ", K)#
+	f <- ceiling(n/K)#
+	s <- sample0(rep(1L:K, f), n)#
+	n.s <- table(s)#
+	glm.y <- glmfit$y#
+	cost.0 <- cost(glm.y, fitted(glmfit))#
+	ms <- max(s)#
+	CV <- 0#
+	Call <- glmfit$call#
+	for (i in seq_len(ms)) {#
+	    j.out <- seq_len(n)[(s == i)]#
+	    j.in <- seq_len(n)[(s != i)]#
+	    Call$data <- data[j.in, , drop = FALSE]#
+	    d.glm <- eval.parent(Call)#
+	    p.alpha <- n.s[i]/n#
+	    cost.i <- cost(glm.y[j.out], predict(d.glm, data[j.out, #
+	        , drop = FALSE], type = "response"))#
+	    CV <- CV + p.alpha * cost.i#
+	    cost.0 <- cost.0 - p.alpha * cost(glm.y, predict(d.glm, #
+	        data, type = "response"))#
+	}#
+	list(call = call, K = K, delta = c(CV, CV + cost.0), seed = seed)#
+}
+sample(c(0,1), n[i], replace=TRUE, prob=c(killed[i]/n[i],alive[i]/n[i]))
+#!/usr/bin/R#
+#
+rm(list=ls())#
+options(digits=3)#
+###########################################################################
+# Functions#
+###########################################################################
+res_Plots <- function(m,modelname){#
+  opar <- par(mfrow = c(2,2), oma = c(0, 0, 1.1, 0))#
+  plot(m,main=modelname)#
+  par(opar)#
+}#
+#
+###########################################################################
+# Data initialization#
+###########################################################################
+conc     = c(1.6907,1.7242,1.7552,1.7842,1.8113,1.8369,1.8610,1.8839)#
+dose     = exp(conc)*10#
+n        = c(59,60,62,56,63,59,62,60)#
+killed   = c(6,13,18,28,52,53,61,60)#
+alive    = n - killed#
+logdose  = log(dose)#
+dose2    = dose^2#
+logdose2 = log(dose)^2#
+bliss    = data.frame(dose,dose2,logdose,logdose2,n,killed,alive)#
+#
+###########################################################################
+# GLM models#
+###########################################################################
+#
+m1 = glm(#
+	cbind(killed,alive)~dose,#
+	binomial('cloglog'))#
+m2 = glm(#
+	cbind(killed,alive)~logdose,#
+	binomial('cloglog'))#
+m3 = glm(#
+	cbind(killed,alive)~dose+dose2,#
+	binomial('logit'))#
+m4 = glm(#
+	cbind(killed,alive)~logdose+logdose2,#
+	binomial('logit'))#
+m5 = glm(#
+	cbind(killed,alive)~logdose+logdose2,#
+	binomial('probit'))#
+m6 = glm(#
+	cbind(killed,alive)~dose+dose2,#
+	binomial('probit'))#
+m7 = glm(#
+	cbind(killed,alive)~dose+dose2,#
+	binomial('cloglog'))#
+m8 = glm(#
+	cbind(killed,alive)~logdose+logdose2,#
+	binomial('cloglog'))#
+m9 = glm(#
+	cbind(killed,alive)~dose,#
+	binomial('probit'))#
+m10 = glm(#
+	cbind(killed,alive)~dose,#
+	binomial('logit'))#
+m11 = glm(#
+	cbind(killed,alive)~logdose,#
+	binomial('probit'))#
+m12 = glm(#
+	cbind(killed,alive)~logdose,#
+	binomial('logit'))#
+#
+#
+# logdose is linear with dose#
+ml = lm(logdose~dose)#
+summary(ml)#
+#
+# plot model qqplot, residual-fitted plot#
+res_Plots(m1,"m1_cloglog")#
+res_Plots(m9,"m9_probit")#
+res_Plots(m10,"m10_logit")#
+#
+#
+# plot out data range#
+doserange=c(48:70)#
+plot(#
+	dose,killed/n,#
+	xlim = range(doserange),#
+	xlab = "dose of CS2, mg/L",#
+	ylab = "Morality")#
+lines(#
+	doserange,#
+	predict(m1,#
+		newdata = data.frame(dose=doserange),type='response'),#
+	col = 1,lw = 2)#
+lines(#
+	doserange,#
+	predict(m9,#
+		newdata = data.frame(dose=doserange),type='response'),#
+	col = 2,lw = 2)#
+lines(#
+	doserange,#
+	predict(m10,#
+		newdata = data.frame(dose=doserange),type='response'),#
+	col = 3,lw = 2)#
+lines(#
+	doserange,#
+	predict(m3,#
+		newdata=data.frame(dose=doserange,dose2=doserange^2),type='response'),#
+	col = 4,lw = 2)#
+legend(#
+	"topleft",#
+	c("cloglog~dose","probit~dose","logit~dose","logit~dose+dos2"),#
+	pch = "-",#
+	col = 1:4)#
+#
+# plot data range#
+plot(dose,killed/n,#
+	xlab = "dose of CS2, mg/L",#
+	ylab = "Morality")#
+lines(dose,m1$fit, col = 1,lw = 2)#
+lines(dose,m9$fit, col = 2,lw = 2)#
+lines(dose,m10$fit,col = 3,lw = 2)#
+legend(#
+	"topleft",#
+	c("cloglog~dose","probit~dose","logit~dose"),#
+	pch = "-",#
+	col = 1:3)#
+#
+#
+# Akalke weight#
+aicsModelName = paste("m",c(1,9,10),sep="")#
+aics = data.frame(#
+	aicsModelName,#
+	c(m1$aic,m9$aic,m10$aic),row.names=NULL)#
+colnames(aics) = c("model","AIC")#
+aics = aics[order(aics$AIC),]#
+for(i in 1:dim(aics)[1]){#
+	aics$diff[i] = aics$AIC[i]-aics$AIC[1]#
+}#
+aics$wi = exp(-0.5*aics$diff)#
+aics$aic.weights = aics$wi/sum(aics$wi)#
+#
+# Goodness-fit #
+Chi2 = function(m){#
+	Pi_hat = m$fit#
+	sum(((killed - n*Pi_hat)^2) / (n*Pi_hat *(1-Pi_hat)))#
+}#
+Chi2_m1  = Chi2(m1)#
+# [1] 3.28#
+Chi2_m9  = Chi2(m9)#
+# [1] 7.85#
+Chi2_m10 = Chi2(m10)#
+# [1] 8.45#
+P_m1     = 1- pchisq(Chi2_m1,df.residual(m1))#
+# [1] 0.772#
+P_m9     = 1- pchisq(Chi2_m9,df.residual(m9))#
+# [1] 0.249#
+P_m10    = 1- pchisq(Chi2_m10,df.residual(m10))#
+# [1] 0.207#
+#
+# Confidence interverl#
+confint(m1)#
+# Waiting for profiling to be done...#
+#               2.5 % 97.5 %#
+# (Intercept) -25.953 -18.80#
+# dose          0.312   0.43#
+confint(m9)#
+# Waiting for profiling to be done...#
+#               2.5 %  97.5 %#
+# (Intercept) -22.719 -16.829#
+# dose          0.286   0.386#
+confint(m10)#
+# Waiting for profiling to be done...#
+#               2.5 %  97.5 %#
+# (Intercept) -40.257 -28.726#
+# dose          0.489   0.683#
+#
+#
+# Random set binary data to fit experiment data#
+# 0 is dead#
+# 1 is alive #
+set.seed(1)#
+for (i in c(1:nrow(bliss))){#
+sample(c(0,1), n[i], replace=TRUE, prob=c(killed[i]/n[i],alive[i]/n[i]))	#
+}
+bliss
+m1$fit
+nmean = mean(n)
+nmean
+nmean = round(mean(n))
+nmean
+#!/usr/bin/R#
+#
+rm(list=ls())#
+options(digits=3)#
+###########################################################################
+# Functions#
+###########################################################################
+res_Plots <- function(m,modelname){#
+  opar <- par(mfrow = c(2,2), oma = c(0, 0, 1.1, 0))#
+  plot(m,main=modelname)#
+  par(opar)#
+}#
+#
+###########################################################################
+# Data initialization#
+###########################################################################
+conc     = c(1.6907,1.7242,1.7552,1.7842,1.8113,1.8369,1.8610,1.8839)#
+dose     = exp(conc)*10#
+ntotal   = c(59,60,62,56,63,59,62,60)#
+killed   = c(6,13,18,28,52,53,61,60)#
+alive    = ntotal - killed#
+logdose  = log(dose)#
+dose2    = dose^2#
+logdose2 = log(dose)^2#
+bliss    = data.frame(dose,dose2,logdose,logdose2,ntotal,killed,alive)#
+#
+###########################################################################
+# GLM models#
+###########################################################################
+#
+m1 = glm(#
+	cbind(killed,alive)~dose,#
+	binomial('cloglog'))#
+m2 = glm(#
+	cbind(killed,alive)~logdose,#
+	binomial('cloglog'))#
+m3 = glm(#
+	cbind(killed,alive)~dose+dose2,#
+	binomial('logit'))#
+m4 = glm(#
+	cbind(killed,alive)~logdose+logdose2,#
+	binomial('logit'))#
+m5 = glm(#
+	cbind(killed,alive)~logdose+logdose2,#
+	binomial('probit'))#
+m6 = glm(#
+	cbind(killed,alive)~dose+dose2,#
+	binomial('probit'))#
+m7 = glm(#
+	cbind(killed,alive)~dose+dose2,#
+	binomial('cloglog'))#
+m8 = glm(#
+	cbind(killed,alive)~logdose+logdose2,#
+	binomial('cloglog'))#
+m9 = glm(#
+	cbind(killed,alive)~dose,#
+	binomial('probit'))#
+m10 = glm(#
+	cbind(killed,alive)~dose,#
+	binomial('logit'))#
+m11 = glm(#
+	cbind(killed,alive)~logdose,#
+	binomial('probit'))#
+m12 = glm(#
+	cbind(killed,alive)~logdose,#
+	binomial('logit'))#
+#
+#
+# logdose is linear with dose#
+ml = lm(logdose~dose)#
+summary(ml)#
+#
+# plot model qqplot, residual-fitted plot#
+res_Plots(m1,"m1_cloglog")#
+res_Plots(m9,"m9_probit")#
+res_Plots(m10,"m10_logit")#
+#
+#
+# plot out data range#
+doserange=c(48:70)#
+plot(#
+	dose,killed/ntotal,#
+	xlim = range(doserange),#
+	xlab = "dose of CS2, mg/L",#
+	ylab = "Morality")#
+lines(#
+	doserange,#
+	predict(m1,#
+		newdata = data.frame(dose=doserange),type='response'),#
+	col = 1,lw = 2)#
+lines(#
+	doserange,#
+	predict(m9,#
+		newdata = data.frame(dose=doserange),type='response'),#
+	col = 2,lw = 2)#
+lines(#
+	doserange,#
+	predict(m10,#
+		newdata = data.frame(dose=doserange),type='response'),#
+	col = 3,lw = 2)#
+lines(#
+	doserange,#
+	predict(m3,#
+		newdata=data.frame(dose=doserange,dose2=doserange^2),type='response'),#
+	col = 4,lw = 2)#
+legend(#
+	"topleft",#
+	c("cloglog~dose","probit~dose","logit~dose","logit~dose+dos2"),#
+	pch = "-",#
+	col = 1:4)#
+#
+# plot data range#
+plot(dose,killed/n,#
+	xlab = "dose of CS2, mg/L",#
+	ylab = "Morality")#
+lines(dose,m1$fit, col = 1,lw = 2)#
+lines(dose,m9$fit, col = 2,lw = 2)#
+lines(dose,m10$fit,col = 3,lw = 2)#
+legend(#
+	"topleft",#
+	c("cloglog~dose","probit~dose","logit~dose"),#
+	pch = "-",#
+	col = 1:3)#
+#
+#
+# Akalke weight#
+aicsModelName = paste("m",c(1,9,10),sep="")#
+aics = data.frame(#
+	aicsModelName,#
+	c(m1$aic,m9$aic,m10$aic),row.names=NULL)#
+colnames(aics) = c("model","AIC")#
+aics = aics[order(aics$AIC),]#
+for(i in 1:dim(aics)[1]){#
+	aics$diff[i] = aics$AIC[i]-aics$AIC[1]#
+}#
+aics$wi = exp(-0.5*aics$diff)#
+aics$aic.weights = aics$wi/sum(aics$wi)#
+#
+# Goodness-fit #
+Chi2 = function(m){#
+	Pi_hat = m$fit#
+	sum(((killed - ntotal*Pi_hat)^2) / (ntotal*Pi_hat *(1-Pi_hat)))#
+}#
+Chi2_m1  = Chi2(m1)#
+# [1] 3.28#
+Chi2_m9  = Chi2(m9)#
+# [1] 7.85#
+Chi2_m10 = Chi2(m10)#
+# [1] 8.45#
+P_m1     = 1- pchisq(Chi2_m1,df.residual(m1))#
+# [1] 0.772#
+P_m9     = 1- pchisq(Chi2_m9,df.residual(m9))#
+# [1] 0.249#
+P_m10    = 1- pchisq(Chi2_m10,df.residual(m10))#
+# [1] 0.207#
+#
+# Confidence interverl#
+confint(m1)#
+# Waiting for profiling to be done...#
+#               2.5 % 97.5 %#
+# (Intercept) -25.953 -18.80#
+# dose          0.312   0.43#
+confint(m9)#
+# Waiting for profiling to be done...#
+#               2.5 %  97.5 %#
+# (Intercept) -22.719 -16.829#
+# dose          0.286   0.386#
+confint(m10)#
+# Waiting for profiling to be done...#
+#               2.5 %  97.5 %#
+# (Intercept) -40.257 -28.726#
+# dose          0.489   0.683
+# plot data range#
+plot(dose,killed/n,#
+	xlab = "dose of CS2, mg/L",#
+	ylab = "Morality")#
+lines(dose,m1$fit, col = 1,lw = 2)#
+lines(dose,m9$fit, col = 2,lw = 2)#
+lines(dose,m10$fit,col = 3,lw = 2)#
+legend(#
+	"topleft",#
+	c("cloglog~dose","probit~dose","logit~dose"),#
+	pch = "-",#
+	col = 1:3)
+# plot data range#
+plot(dose,killed/ntotal,#
+	xlab = "dose of CS2, mg/L",#
+	ylab = "Morality")#
+lines(dose,m1$fit, col = 1,lw = 2)#
+lines(dose,m9$fit, col = 2,lw = 2)#
+lines(dose,m10$fit,col = 3,lw = 2)#
+legend(#
+	"topleft",#
+	c("cloglog~dose","probit~dose","logit~dose"),#
+	pch = "-",#
+	col = 1:3)
+kvals <- unique(round(n/(1L:floor(n/2))))
+n = 60#
+K = 5#
+kvals <- unique(round(n/(1L:floor(n/2))))
+kvals
+	temp <- abs(kvals - K)
+temp
+n = 60#
+K = 5#
+kvals <- unique(round(n/(1L:floor(n/2))))#
+temp <- abs(kvals - K)#
+if (!any(temp == 0)) #
+  K <- kvals[temp == min(temp)][1L]#
+if (K != K.o) #
+  warning("K has been set to ", K)
+n = 60#
+K.o = K#
+K = 5#
+kvals <- unique(round(n/(1L:floor(n/2))))#
+temp <- abs(kvals - K)#
+if (!any(temp == 0)) #
+  K <- kvals[temp == min(temp)][1L]#
+if (K != K.o) #
+  warning("K has been set to ", K)
+K
+	f <- ceiling(n/K)#
+	s <- sample0(rep(1L:K, f), n)#
+	n.s <- table(s)
+f <- ceiling(n/K)#
+s <- sample(rep(1L:K, f), n)#
+n.s <- table(s)
+n.s
+		j.out <- seq_len(n)[(s == i)]#
+		j.in <- seq_len(n)[(s != i)]
+j.out
+i
+bliss
+seq_len(n)
+seq_len(63)
+seq_len(63)[s==3]
+BinData = list()
+BinData
+BinData$1 = c(1,0,0,2)
+c(BinData,1=c(0,1))
+c(BinData,"i"=c(0,1))
+c(BinData,c=c(0,1))
+c(BinData,c=list(c(0,1)))
+c(BinData,1=list(c(0,1)))
+c(BinData,as.char(1)=list(c(0,1)))
+c(BinData,list(c(0,1)))
+BinData = list();#
+for (i in c(1:nrow(bliss))){#
+	BinData = c(BinData, list(sample(#
+		c(0,1), ntotal[i], replace=TRUE, #
+		prob=c(killed[i]/ntotal[i],alive[i]/ntotal[i]))	)#
+}
+for (i in c(1:nrow(bliss))){#
+	BinData = c(BinData, list(c(0,1)))#
+}
+BinData
+BinData = list();#
+for (i in c(1:nrow(bliss))){#
+	BinData = c(BinData, list(sample(#
+		c(0,1), ntotal[i], replace=TRUE, #
+		prob=c(killed[i]/ntotal[i],alive[i]/ntotal[i]))	))#
+}
+BinData
+BinData[[1]]
+s
+ntotal
+n = max(ntotal)#
+K.o = K#
+K = 5#
+kvals <- unique(round(n/(1L:floor(n/2))))#
+temp <- abs(kvals - K)#
+if (!any(temp == 0)) #
+  K <- kvals[temp == min(temp)][1L]#
+if (K != K.o) #
+  warning("K has been set to ", K)#
+f <- ceiling(n/K)#
+s <- sample(rep(1L:K, f), n)#
+n.s <- table(s)
+n.s
+s
+glmfit = m1#
+n = max(ntotal)#
+K.o = K#
+K = 5#
+kvals <- unique(round(n/(1L:floor(n/2))))#
+temp <- abs(kvals - K)#
+if (!any(temp == 0)) #
+  K <- kvals[temp == min(temp)][1L]#
+if (K != K.o) #
+  warning("K has been set to ", K)#
+f <- ceiling(n/K)#
+s <- sample(rep(1L:K, f), n)#
+n.s <- table(s)#
+glm.y <- glmfit$y
+glm.y
+cost.0 <- cost(glm.y, fitted(glmfit))
+cost = function(y, yhat) mean((y - yhat)^2)
+cost.0 <- cost(glm.y, fitted(glmfit))
+cost.0
+	ms <- max(s)#
+	CV <- 0
+ms
+CV
+seq_len(ms)
+seq_len(n)
+n
+seq_len(n)[s==1]
+seq_len(n)[s==2]
+seq_len(n)[s==3]
+seq_len(n)[s==4]
+	j.out <- seq_len(n)[(s == i)]#
+	j.in <- seq_len(n)[(s != i)]
+j.out
+i
+i = 1
+	j.out <- seq_len(n)[(s == i)]#
+	j.in <- seq_len(n)[(s != i)]
+j.out
+bin01
+set.seed(1)#
+bin01 = list();#
+for (i in c(1:nrow(bliss))){#
+	bin01 = c(bin01, list(sample(#
+		c(0,1), ntotal[i], replace=TRUE, #
+		prob=c(killed[i]/ntotal[i],alive[i]/ntotal[i]))	))#
+}
+bin01
+bin01[[1]]
+j.out
+bin01
+bin01[[1]]
+bin01[[1]][j.in]
+bin01[[1]][j.out]
+bin01[[1]][j.in]
+is.na(bin01[[1]][j.in])
+	tmpbin = bin01[[1]][j.in] # include NA#
+	tmpbin = tmpbin[!is.na(tmpbin)]
+tmpbin
+tmpbin==1
+tmpbin[tmpbin==1]
+tmpalive = len(tmpbin[tmpbin==1])
+tmpalive = length(tmpbin[tmpbin==1])
+tmpalive
+bliss
+nrow(bliss)
+glm.y
+	tmpntotal.in = c()#
+	tmpalive.in = c()#
+	tmpkilled.in = c()#
+	for (kk in seq_len(nrow(bliss))){#
+		tmpbin.in.kk    = bin01[[kk]][j.in] # include NA#
+		tmpbin.in.kk    = tmpbin.in.kk[!is.na(tmpbin.in.kk)]#
+		tmpntotal.in.kk = length(tmpbin.in.kk)#
+		tmpalive.in.kk  = tmpbin.in.kk[tmpbin.kk==1]#
+		tmpkilled.in.kk = tmpntotal.in.kk - tmpalive.in.kk#
+		#
+		tmpntotal.in = c(tmpntotal.in,tmpntotal.in.kk)#
+		tmpalive.in = c(tmpalive.in, tmpalive.in.kk)#
+		tmpkilled.in = c(tmpkilled.in,tmpkilled.in.kk)#
+	}
+	tmpntotal.in = c()#
+	tmpalive.in = c()#
+	tmpkilled.in = c()#
+	for (kk in seq_len(nrow(bliss))){#
+		tmpbin.in.kk    = bin01[[kk]][j.in] # include NA#
+		tmpbin.in.kk    = tmpbin.in.kk[!is.na(tmpbin.in.kk)]#
+		tmpntotal.in.kk = length(tmpbin.in.kk)#
+		tmpalive.in.kk  = tmpbin.in.kk[tmpbin.in.kk==1]#
+		tmpkilled.in.kk = tmpntotal.in.kk - tmpalive.in.kk#
+		#
+		tmpntotal.in = c(tmpntotal.in,tmpntotal.in.kk)#
+		tmpalive.in = c(tmpalive.in, tmpalive.in.kk)#
+		tmpkilled.in = c(tmpkilled.in,tmpkilled.in.kk)#
+	}
+tmpntotal.in
+	ntotal.in = c()#
+	alive.in = c()#
+	killed.in = c()#
+	for (kk in seq_len(nrow(bliss))){#
+		bin.in.kk    = bin01[[kk]][j.in] # include NA#
+		bin.in.kk    = bin.in.kk[!is.na(bin.in.kk)]#
+		ntotal.in.kk = length(bin.in.kk)#
+		alive.in.kk  = bin.in.kk[bin.in.kk==1]#
+		killed.in.kk = ntotal.in.kk - alive.in.kk#
+		#
+		ntotal.in = c(ntotal.in,ntotal.in.kk)#
+		alive.in = c(alive.in, alive.in.kk)#
+		killed.in = c(killed.in,killed.in.kk)#
+	}
+ntotal.in
+alive.in
+	ntotal.in = c()#
+	alive.in = c()#
+	killed.in = c()#
+	for (kk in seq_len(nrow(bliss))){#
+		bin.in.kk    = bin01[[kk]][j.in] # include NA#
+		bin.in.kk    = bin.in.kk[!is.na(bin.in.kk)]#
+		ntotal.in.kk = length(bin.in.kk)#
+		alive.in.kk  = length(bin.in.kk[bin.in.kk==1])#
+		killed.in.kk = ntotal.in.kk - alive.in.kk#
+		#
+		ntotal.in = c(ntotal.in,ntotal.in.kk)#
+		alive.in = c(alive.in, alive.in.kk)#
+		killed.in = c(killed.in,killed.in.kk)#
+	}
+alive.in
+killed.in
+ntotal.in
+#
+	ntotal.in = c()#
+	alive.in = c()#
+	killed.in = c()#
+	for (kk in seq_len(nrow(bliss))){#
+		bin.in.kk    = bin01[[kk]][j.in] # include NA#
+		bin.in.kk    = bin.in.kk[!is.na(bin.in.kk)]#
+		ntotal.in.kk = length(bin.in.kk)#
+		alive.in.kk  = length(bin.in.kk[bin.in.kk==1])#
+		killed.in.kk = ntotal.in.kk - alive.in.kk#
+		#
+		ntotal.in = c(ntotal.in,ntotal.in.kk)#
+		alive.in = c(alive.in, alive.in.kk)#
+		killed.in = c(killed.in,killed.in.kk)#
+	}#
+	Call$data <-#
+	 data.frame(dose,dose2,logdose,logdose2,ntotal.in,killed.in,alive.in)#
+	d.glm <- eval.parent(Call)
+Call <- glmfit$call
+	ntotal.in = c()#
+	alive.in = c()#
+	killed.in = c()#
+	for (kk in seq_len(nrow(bliss))){#
+		bin.in.kk    = bin01[[kk]][j.in] # include NA#
+		bin.in.kk    = bin.in.kk[!is.na(bin.in.kk)]#
+		ntotal.in.kk = length(bin.in.kk)#
+		alive.in.kk  = length(bin.in.kk[bin.in.kk==1])#
+		killed.in.kk = ntotal.in.kk - alive.in.kk#
+		#
+		ntotal.in = c(ntotal.in,ntotal.in.kk)#
+		alive.in = c(alive.in, alive.in.kk)#
+		killed.in = c(killed.in,killed.in.kk)#
+	}#
+	Call$data <-#
+	 data.frame(dose,dose2,logdose,logdose2,ntotal.in,killed.in,alive.in)#
+	d.glm <- eval.parent(Call)
+d.glm
+dose
+d.glm$fit
+m1$fit
+	ntotal.in = c()#
+	alive.in = c()#
+	killed.in = c()#
+	for (kk in seq_len(nrow(bliss))){#
+		bin.in.kk    = bin01[[kk]][j.in] # include NA#
+		bin.in.kk    = bin.in.kk[!is.na(bin.in.kk)]#
+		ntotal.in.kk = length(bin.in.kk)#
+		alive.in.kk  = length(bin.in.kk[bin.in.kk==1])#
+		killed.in.kk = ntotal.in.kk - alive.in.kk#
+		#
+		ntotal.in = c(ntotal.in,ntotal.in.kk)#
+		alive.in = c(alive.in, alive.in.kk)#
+		killed.in = c(killed.in,killed.in.kk)#
+	}#
+	Call$data <-#
+	 data.frame(dose,dose2,logdose,logdose2,ntotal.in,killed.in,alive.in)#
+	d.glm <- eval.parent(Call)
+d.glm$fit
+m1$fit
+	p.alpha <- n.s[i]/n
+p.alpha
+n
+n.s
+i
+i = 1
+	i = 1#
+	j.out <- seq_len(n)[(s == i)]#
+	j.in <- seq_len(n)[(s != i)]#
+#
+	ntotal.in = c()#
+	alive.in = c()#
+	killed.in = c()#
+	for (kk in seq_len(nrow(bliss))){#
+		bin.in.kk    = bin01[[kk]][j.in] # include NA#
+		bin.in.kk    = bin.in.kk[!is.na(bin.in.kk)]#
+		ntotal.in.kk = length(bin.in.kk)#
+		alive.in.kk  = length(bin.in.kk[bin.in.kk==1])#
+		killed.in.kk = ntotal.in.kk - alive.in.kk#
+		#
+		ntotal.in = c(ntotal.in,ntotal.in.kk)#
+		alive.in = c(alive.in, alive.in.kk)#
+		killed.in = c(killed.in,killed.in.kk)#
+	}#
+	Call$data <-#
+	 data.frame(dose,dose2,logdose,logdose2,ntotal.in,killed.in,alive.in)#
+	d.glm <- eval.parent(Call)#
+	p.alpha <- n.s[i]/n
+d.glm$fit
+glm.y
+	Call$data <-#
+	 data.frame(dose,dose2,logdose,logdose2,ntotal.in,killed.in,alive.in)#
+	d.glm <- eval.parent(Call)#
+	p.alpha <- n.s[i]/n#
+	cost.i <- cost(glm.y[j.out], predict(d.glm, data.frame(dose,dose2,logdose,logdose2,ntotal.out,killed.out,alive.out), type = "response"))
+	ntotal.in = c()#
+	alive.in = c()#
+	killed.in = c()#
+	ntotal.out = alive.out = killed.out = c()#
+	for (kk in seq_len(nrow(bliss))){#
+		bin.in.kk    = bin01[[kk]][j.in] # include NA#
+		bin.in.kk    = bin.in.kk[!is.na(bin.in.kk)]#
+		ntotal.in.kk = length(bin.in.kk)#
+		alive.in.kk  = length(bin.in.kk[bin.in.kk==1])#
+		killed.in.kk = ntotal.in.kk - alive.in.kk#
+		#
+		ntotal.in = c(ntotal.in,ntotal.in.kk)#
+		alive.in = c(alive.in, alive.in.kk)#
+		killed.in = c(killed.in,killed.in.kk)#
+		#
+		bin.out.kk    = bin01[[kk]][j.out] # include NA#
+		bin.out.kk    = bin.out.kk[!is.na(bin.out.kk)]#
+		ntotal.out.kk = length(bin.out.kk)#
+		alive.out.kk  = length(bin.out.kk[bin.out.kk==1])#
+		killed.out.kk = ntotal.out.kk - alive.out.kk#
+		#
+		ntotal.out = c(ntotal.out,ntotal.out.kk)#
+		alive.out = c(alive.out, alive.out.kk)#
+		killed.out = c(killed.out,killed.out.kk)#
+		#
+	}#
+	Call$data <-#
+	 data.frame(dose,dose2,logdose,logdose2,ntotal.in,killed.in,alive.in)#
+	d.glm <- eval.parent(Call)#
+	p.alpha <- n.s[i]/n#
+	cost.i <- cost(glm.y[j.out], predict(d.glm, data.frame(dose,dose2,logdose,logdose2,ntotal.out,killed.out,alive.out), type = "response"))
+data.frame(dose,dose2,logdose,logdose2,ntotal.out,killed.out,alive.out)
+d.glm
+summary(d.glm)
+str(d.glm)
+	dataframe.in =#
+	 data.frame(dose,dose2,logdose,logdose2,ntotal.in,killed.in,alive.in)
+colname(dataframe.in)
+colnames(dataframe.in)
+	 data.frame(dose,dose2,logdose,logdose2,ntotal.in,killed.in,alive.in)#
+	colname(dataframe.in) = c("dose","dose2","logdose","logdose2", "ntotal","killed","alive")#
+	Call$data <- dataframe.in
+	dataframe.in =#
+	 data.frame(dose,dose2,logdose,logdose2,ntotal.in,killed.in,alive.in)#
+	colnames(dataframe.in) = c("dose","dose2","logdose","logdose2", "ntotal","killed","alive")
+dataframe.in
+	Call$data <- dataframe.in#
+	d.glm <- eval.parent(Call)
+d.glm$fit
+m1$fit
+	dataframe.in =#
+	 data.frame(dose,dose2,logdose,logdose2,ntotal.in,killed.in,alive.in)#
+	colnames(dataframe.in) = c("dose","dose2","logdose","logdose2", "ntotal","killed","alive")#
+	dataframe.out =#
+	 data.frame(dose,dose2,logdose,logdose2,ntotal.out,killed.out,alive.out)#
+	colnames(dataframe.out) = c("dose","dose2","logdose","logdose2", "ntotal","killed","alive")
+	cost.i <- cost(glm.y[j.out], predict(d.glm, dataframe.out, type = "response"))
+d.glm
+	dataframe.in =#
+	 data.frame(dose,dose2,logdose,logdose2,ntotal.in,killed.in,alive.in)#
+	colnames(dataframe.in) = c("dose","dose2","logdose","logdose2", "ntotal","killed","alive")#
+	dataframe.out =#
+	 data.frame(dose,dose2,logdose,logdose2,ntotal.out,killed.out,alive.out)#
+	colnames(dataframe.out) = c("dose","dose2","logdose","logdose2", "ntotal","killed","alive")#
+#
+	Call$data <- dataframe.in#
+	d.glm <- eval.parent(Call)
+d.glm
+d.glm$fit
+	dataframe.in =#
+		data.frame(#
+			dose=dose,#
+			dose2=dose2,#
+			logdose=logdose,#
+			logdose2=logdose2,#
+			ntotal=ntotal.in,#
+			killed = killed.in,#
+			alive = alive.in)
+dataframe.in
+	Call$data <- dataframe.in#
+	d.glm <- eval.parent(Call)
+d.glm
+m1
+	dataframe.in =#
+		data.frame(#
+			dose=dose,#
+			dose2=dose2,#
+			logdose=logdose,#
+			logdose2=logdose2,#
+			ntotal=ntotal.in,#
+			killed = killed.in,#
+			alive = alive.in)#
+	dataframe.out =#
+	data.frame(#
+		dose=dose,#
+		dose2=dose2,#
+		logdose=logdose,#
+		logdose2=logdose2,#
+		ntotal=ntotal.out,#
+		killed = killed.out,#
+		alive = alive.out)
+dataframe.out
+	Call$data <- dataframe.in#
+	d.glm <- eval.parent(Call)#
+	p.alpha <- n.s[i]/n#
+	cost.i <- cost(glm.y[j.out], predict(d.glm, dataframe.out, type = "response"))
+predict(d.glm, dataframe.out, type = "response")
+d.glm
+	cost.i <- cost(glm.y, predict(d.glm, dataframe.out, type = "response"))
+cost.i
+	CV <- CV + p.alpha * cost.i
+cost = function(y, yhat) mean((y - yhat)^2)#
+#
+glmfit = m1#
+n = max(ntotal)#
+K.o = K#
+K = 5#
+kvals <- unique(round(n/(1L:floor(n/2))))#
+temp <- abs(kvals - K)#
+if (!any(temp == 0)) #
+  K <- kvals[temp == min(temp)][1L]#
+if (K != K.o) #
+  warning("K has been set to ", K)#
+f <- ceiling(n/K)#
+s <- sample(rep(1L:K, f), n)#
+n.s <- table(s)#
+glm.y <- glmfit$y#
+ms <- max(s)#
+CV <- 0#
+#
+Call <- glmfit$call#
+for (i in seq_len(ms)) {#
+	i = 1#
+	j.out <- seq_len(n)[(s == i)]#
+	j.in <- seq_len(n)[(s != i)]#
+#
+	ntotal.in = c()#
+	alive.in = c()#
+	killed.in = c()#
+	ntotal.out = alive.out = killed.out = c()#
+	for (kk in seq_len(nrow(bliss))){#
+		bin.in.kk    = bin01[[kk]][j.in] # include NA#
+		bin.in.kk    = bin.in.kk[!is.na(bin.in.kk)]#
+		ntotal.in.kk = length(bin.in.kk)#
+		alive.in.kk  = length(bin.in.kk[bin.in.kk==1])#
+		killed.in.kk = ntotal.in.kk - alive.in.kk#
+		#
+		ntotal.in = c(ntotal.in,ntotal.in.kk)#
+		alive.in = c(alive.in, alive.in.kk)#
+		killed.in = c(killed.in,killed.in.kk)#
+		#
+		bin.out.kk    = bin01[[kk]][j.out] # include NA#
+		bin.out.kk    = bin.out.kk[!is.na(bin.out.kk)]#
+		ntotal.out.kk = length(bin.out.kk)#
+		alive.out.kk  = length(bin.out.kk[bin.out.kk==1])#
+		killed.out.kk = ntotal.out.kk - alive.out.kk#
+		#
+		ntotal.out = c(ntotal.out,ntotal.out.kk)#
+		alive.out = c(alive.out, alive.out.kk)#
+		killed.out = c(killed.out,killed.out.kk)#
+		#
+	}#
+	dataframe.in =#
+		data.frame(#
+			dose=dose,#
+			dose2=dose2,#
+			logdose=logdose,#
+			logdose2=logdose2,#
+			ntotal=ntotal.in,#
+			killed = killed.in,#
+			alive = alive.in)#
+	dataframe.out =#
+	data.frame(#
+		dose=dose,#
+		dose2=dose2,#
+		logdose=logdose,#
+		logdose2=logdose2,#
+		ntotal=ntotal.out,#
+		killed = killed.out,#
+		alive = alive.out)#
+#
+	Call$data <- dataframe.in#
+	d.glm <- eval.parent(Call)#
+	p.alpha <- n.s[i]/n#
+	cost.i <- cost(glm.y, predict(d.glm, dataframe.out, type = "response"))#
+	CV <- CV + p.alpha * cost.i#
+	#
+	#
+}
+CV
+glmfit = m9#
+n = max(ntotal)#
+K.o = K#
+K = 5#
+kvals <- unique(round(n/(1L:floor(n/2))))#
+temp <- abs(kvals - K)#
+if (!any(temp == 0)) #
+  K <- kvals[temp == min(temp)][1L]#
+if (K != K.o) #
+  warning("K has been set to ", K)#
+f <- ceiling(n/K)#
+s <- sample(rep(1L:K, f), n)#
+n.s <- table(s)#
+glm.y <- glmfit$y#
+ms <- max(s)#
+CV <- 0#
+#
+Call <- glmfit$call#
+for (i in seq_len(ms)) {#
+	i = 1#
+	j.out <- seq_len(n)[(s == i)]#
+	j.in <- seq_len(n)[(s != i)]#
+#
+	ntotal.in = c()#
+	alive.in = c()#
+	killed.in = c()#
+	ntotal.out = alive.out = killed.out = c()#
+	for (kk in seq_len(nrow(bliss))){#
+		bin.in.kk    = bin01[[kk]][j.in] # include NA#
+		bin.in.kk    = bin.in.kk[!is.na(bin.in.kk)]#
+		ntotal.in.kk = length(bin.in.kk)#
+		alive.in.kk  = length(bin.in.kk[bin.in.kk==1])#
+		killed.in.kk = ntotal.in.kk - alive.in.kk#
+		#
+		ntotal.in = c(ntotal.in,ntotal.in.kk)#
+		alive.in = c(alive.in, alive.in.kk)#
+		killed.in = c(killed.in,killed.in.kk)#
+		#
+		bin.out.kk    = bin01[[kk]][j.out] # include NA#
+		bin.out.kk    = bin.out.kk[!is.na(bin.out.kk)]#
+		ntotal.out.kk = length(bin.out.kk)#
+		alive.out.kk  = length(bin.out.kk[bin.out.kk==1])#
+		killed.out.kk = ntotal.out.kk - alive.out.kk#
+		#
+		ntotal.out = c(ntotal.out,ntotal.out.kk)#
+		alive.out = c(alive.out, alive.out.kk)#
+		killed.out = c(killed.out,killed.out.kk)#
+		#
+	}#
+	dataframe.in =#
+		data.frame(#
+			dose=dose,#
+			dose2=dose2,#
+			logdose=logdose,#
+			logdose2=logdose2,#
+			ntotal=ntotal.in,#
+			killed = killed.in,#
+			alive = alive.in)#
+	dataframe.out =#
+	data.frame(#
+		dose=dose,#
+		dose2=dose2,#
+		logdose=logdose,#
+		logdose2=logdose2,#
+		ntotal=ntotal.out,#
+		killed = killed.out,#
+		alive = alive.out)#
+#
+	Call$data <- dataframe.in#
+	d.glm <- eval.parent(Call)#
+	p.alpha <- n.s[i]/n#
+	cost.i <- cost(glm.y, predict(d.glm, dataframe.out, type = "response"))#
+	CV <- CV + p.alpha * cost.i#
+	#
+	#
+}
+CV
+glmfit = m10#
+n = max(ntotal)#
+K.o = K#
+K = 5#
+kvals <- unique(round(n/(1L:floor(n/2))))#
+temp <- abs(kvals - K)#
+if (!any(temp == 0)) #
+  K <- kvals[temp == min(temp)][1L]#
+if (K != K.o) #
+  warning("K has been set to ", K)#
+f <- ceiling(n/K)#
+s <- sample(rep(1L:K, f), n)#
+n.s <- table(s)#
+glm.y <- glmfit$y#
+ms <- max(s)#
+CV <- 0#
+#
+Call <- glmfit$call#
+for (i in seq_len(ms)) {#
+	i = 1#
+	j.out <- seq_len(n)[(s == i)]#
+	j.in <- seq_len(n)[(s != i)]#
+#
+	ntotal.in = c()#
+	alive.in = c()#
+	killed.in = c()#
+	ntotal.out = alive.out = killed.out = c()#
+	for (kk in seq_len(nrow(bliss))){#
+		bin.in.kk    = bin01[[kk]][j.in] # include NA#
+		bin.in.kk    = bin.in.kk[!is.na(bin.in.kk)]#
+		ntotal.in.kk = length(bin.in.kk)#
+		alive.in.kk  = length(bin.in.kk[bin.in.kk==1])#
+		killed.in.kk = ntotal.in.kk - alive.in.kk#
+		#
+		ntotal.in = c(ntotal.in,ntotal.in.kk)#
+		alive.in = c(alive.in, alive.in.kk)#
+		killed.in = c(killed.in,killed.in.kk)#
+		#
+		bin.out.kk    = bin01[[kk]][j.out] # include NA#
+		bin.out.kk    = bin.out.kk[!is.na(bin.out.kk)]#
+		ntotal.out.kk = length(bin.out.kk)#
+		alive.out.kk  = length(bin.out.kk[bin.out.kk==1])#
+		killed.out.kk = ntotal.out.kk - alive.out.kk#
+		#
+		ntotal.out = c(ntotal.out,ntotal.out.kk)#
+		alive.out = c(alive.out, alive.out.kk)#
+		killed.out = c(killed.out,killed.out.kk)#
+		#
+	}#
+	dataframe.in =#
+		data.frame(#
+			dose=dose,#
+			dose2=dose2,#
+			logdose=logdose,#
+			logdose2=logdose2,#
+			ntotal=ntotal.in,#
+			killed = killed.in,#
+			alive = alive.in)#
+	dataframe.out =#
+	data.frame(#
+		dose=dose,#
+		dose2=dose2,#
+		logdose=logdose,#
+		logdose2=logdose2,#
+		ntotal=ntotal.out,#
+		killed = killed.out,#
+		alive = alive.out)#
+#
+	Call$data <- dataframe.in#
+	d.glm <- eval.parent(Call)#
+	p.alpha <- n.s[i]/n#
+	cost.i <- cost(glm.y, predict(d.glm, dataframe.out, type = "response"))#
+	CV <- CV + p.alpha * cost.i#
+	#
+	#
+}
+CV
+cv.glm
+cv.glm.binomial <- function (glmfit, cost = function(y, yhat) mean((y - yhat)^2), #
+    K = n){#
+			# glmfit = m10#
+	n = max(ntotal)#
+	K.o = K#
+	# K = 5#
+	kvals <- unique(round(n/(1L:floor(n/2))))#
+	temp <- abs(kvals - K)#
+	if (!any(temp == 0)) #
+	  K <- kvals[temp == min(temp)][1L]#
+	if (K != K.o) #
+	  warning("K has been set to ", K)#
+	f <- ceiling(n/K)#
+	s <- sample(rep(1L:K, f), n)#
+	n.s <- table(s)#
+	glm.y <- glmfit$y#
+	ms <- max(s)#
+	CV <- 0#
+#
+	Call <- glmfit$call#
+	for (i in seq_len(ms)) {#
+		i = 1#
+		j.out <- seq_len(n)[(s == i)]#
+		j.in <- seq_len(n)[(s != i)]#
+#
+		ntotal.in = c()#
+		alive.in = c()#
+		killed.in = c()#
+		ntotal.out = alive.out = killed.out = c()#
+		for (kk in seq_len(nrow(bliss))){#
+			bin.in.kk    = bin01[[kk]][j.in] # include NA#
+			bin.in.kk    = bin.in.kk[!is.na(bin.in.kk)]#
+			ntotal.in.kk = length(bin.in.kk)#
+			alive.in.kk  = length(bin.in.kk[bin.in.kk==1])#
+			killed.in.kk = ntotal.in.kk - alive.in.kk#
+#
+			ntotal.in = c(ntotal.in,ntotal.in.kk)#
+			alive.in = c(alive.in, alive.in.kk)#
+			killed.in = c(killed.in,killed.in.kk)#
+#
+			bin.out.kk    = bin01[[kk]][j.out] # include NA#
+			bin.out.kk    = bin.out.kk[!is.na(bin.out.kk)]#
+			ntotal.out.kk = length(bin.out.kk)#
+			alive.out.kk  = length(bin.out.kk[bin.out.kk==1])#
+			killed.out.kk = ntotal.out.kk - alive.out.kk#
+#
+			ntotal.out = c(ntotal.out,ntotal.out.kk)#
+			alive.out = c(alive.out, alive.out.kk)#
+			killed.out = c(killed.out,killed.out.kk)#
+#
+		}#
+		dataframe.in =#
+			data.frame(#
+				dose=dose,#
+				dose2=dose2,#
+				logdose=logdose,#
+				logdose2=logdose2,#
+				ntotal=ntotal.in,#
+				killed = killed.in,#
+				alive = alive.in)#
+		dataframe.out =#
+		data.frame(#
+			dose=dose,#
+			dose2=dose2,#
+			logdose=logdose,#
+			logdose2=logdose2,#
+			ntotal=ntotal.out,#
+			killed = killed.out,#
+			alive = alive.out)#
+#
+		Call$data <- dataframe.in#
+		d.glm <- eval.parent(Call)#
+		p.alpha <- n.s[i]/n#
+		cost.i <- cost(glm.y, predict(d.glm, dataframe.out, type = "response"))#
+		CV <- CV + p.alpha * cost.i#
+	}#
+	list(call = call, K = K, delta = CV)#
+}
+cv.glm.binomial(m1,K=5)
+cv.glm.binomial(m2,K=5)
+cv.glm.binomial(m9,K=5)
+set.seed(90)#
+bin01 = list();#
+for (i in c(1:nrow(bliss))){#
+	bin01 = c(bin01, list(sample(#
+		c(0,1), ntotal[i], replace=TRUE, #
+		prob=c(killed[i]/ntotal[i],alive[i]/ntotal[i]))	))#
+}#
+#
+cost = function(y, yhat) mean((y - yhat)^2)#
+cv.glm.binomial(m1,K=5)#
+cv.glm.binomial <- function (glmfit, cost = function(y, yhat) mean((y - yhat)^2), #
+    K = n){#
+			# glmfit = m10#
+	n = max(ntotal)#
+	K.o = K#
+	# K = 5#
+	kvals <- unique(round(n/(1L:floor(n/2))))#
+	temp <- abs(kvals - K)#
+	if (!any(temp == 0)) #
+	  K <- kvals[temp == min(temp)][1L]#
+	if (K != K.o) #
+	  warning("K has been set to ", K)#
+	f <- ceiling(n/K)#
+	s <- sample(rep(1L:K, f), n)#
+	n.s <- table(s)#
+	glm.y <- glmfit$y#
+	ms <- max(s)#
+	CV <- 0#
+#
+	Call <- glmfit$call#
+	for (i in seq_len(ms)) {#
+		i = 1#
+		j.out <- seq_len(n)[(s == i)]#
+		j.in <- seq_len(n)[(s != i)]#
+#
+		ntotal.in = c()#
+		alive.in = c()#
+		killed.in = c()#
+		ntotal.out = alive.out = killed.out = c()#
+		for (kk in seq_len(nrow(bliss))){#
+			bin.in.kk    = bin01[[kk]][j.in] # include NA#
+			bin.in.kk    = bin.in.kk[!is.na(bin.in.kk)]#
+			ntotal.in.kk = length(bin.in.kk)#
+			alive.in.kk  = length(bin.in.kk[bin.in.kk==1])#
+			killed.in.kk = ntotal.in.kk - alive.in.kk#
+#
+			ntotal.in = c(ntotal.in,ntotal.in.kk)#
+			alive.in = c(alive.in, alive.in.kk)#
+			killed.in = c(killed.in,killed.in.kk)#
+#
+			bin.out.kk    = bin01[[kk]][j.out] # include NA#
+			bin.out.kk    = bin.out.kk[!is.na(bin.out.kk)]#
+			ntotal.out.kk = length(bin.out.kk)#
+			alive.out.kk  = length(bin.out.kk[bin.out.kk==1])#
+			killed.out.kk = ntotal.out.kk - alive.out.kk#
+#
+			ntotal.out = c(ntotal.out,ntotal.out.kk)#
+			alive.out = c(alive.out, alive.out.kk)#
+			killed.out = c(killed.out,killed.out.kk)#
+#
+		}#
+		dataframe.in =#
+			data.frame(#
+				dose=dose,#
+				dose2=dose2,#
+				logdose=logdose,#
+				logdose2=logdose2,#
+				ntotal=ntotal.in,#
+				killed = killed.in,#
+				alive = alive.in)#
+		dataframe.out =#
+		data.frame(#
+			dose=dose,#
+			dose2=dose2,#
+			logdose=logdose,#
+			logdose2=logdose2,#
+			ntotal=ntotal.out,#
+			killed = killed.out,#
+			alive = alive.out)#
+#
+		Call$data <- dataframe.in#
+		d.glm <- eval.parent(Call)#
+		p.alpha <- n.s[i]/n#
+		cost.i <- cost(glm.y, predict(d.glm, dataframe.out, type = "response"))#
+		CV <- CV + p.alpha * cost.i#
+	}#
+	list(call = call, K = K, delta = CV)#
+}
+cv.glm.binomial(m1,K=5)#
+cv.glm.binomial(m1,K=9)#
+cv.glm.binomial(m1,K=10)
+set.seed(99)#
+bin01 = list();#
+for (i in c(1:nrow(bliss))){#
+	bin01 = c(bin01, list(sample(#
+		c(0,1), ntotal[i], replace=TRUE, #
+		prob=c(killed[i]/ntotal[i],alive[i]/ntotal[i]))	))#
+}#
+#
+cost = function(y, yhat) mean((y - yhat)^2)#
+cv.glm.binomial <- function (glmfit, cost = function(y, yhat) mean((y - yhat)^2), #
+    K = n){#
+			# glmfit = m10#
+	n = max(ntotal)#
+	K.o = K#
+	# K = 5#
+	kvals <- unique(round(n/(1L:floor(n/2))))#
+	temp <- abs(kvals - K)#
+	if (!any(temp == 0)) #
+	  K <- kvals[temp == min(temp)][1L]#
+	if (K != K.o) #
+	  warning("K has been set to ", K)#
+	f <- ceiling(n/K)#
+	s <- sample(rep(1L:K, f), n)#
+	n.s <- table(s)#
+	glm.y <- glmfit$y#
+	ms <- max(s)#
+	CV <- 0#
+#
+	Call <- glmfit$call#
+	for (i in seq_len(ms)) {#
+		i = 1#
+		j.out <- seq_len(n)[(s == i)]#
+		j.in <- seq_len(n)[(s != i)]#
+#
+		ntotal.in = c()#
+		alive.in = c()#
+		killed.in = c()#
+		ntotal.out = alive.out = killed.out = c()#
+		for (kk in seq_len(nrow(bliss))){#
+			bin.in.kk    = bin01[[kk]][j.in] # include NA#
+			bin.in.kk    = bin.in.kk[!is.na(bin.in.kk)]#
+			ntotal.in.kk = length(bin.in.kk)#
+			alive.in.kk  = length(bin.in.kk[bin.in.kk==1])#
+			killed.in.kk = ntotal.in.kk - alive.in.kk#
+#
+			ntotal.in = c(ntotal.in,ntotal.in.kk)#
+			alive.in = c(alive.in, alive.in.kk)#
+			killed.in = c(killed.in,killed.in.kk)#
+#
+			bin.out.kk    = bin01[[kk]][j.out] # include NA#
+			bin.out.kk    = bin.out.kk[!is.na(bin.out.kk)]#
+			ntotal.out.kk = length(bin.out.kk)#
+			alive.out.kk  = length(bin.out.kk[bin.out.kk==1])#
+			killed.out.kk = ntotal.out.kk - alive.out.kk#
+#
+			ntotal.out = c(ntotal.out,ntotal.out.kk)#
+			alive.out = c(alive.out, alive.out.kk)#
+			killed.out = c(killed.out,killed.out.kk)#
+#
+		}#
+		dataframe.in =#
+			data.frame(#
+				dose=dose,#
+				dose2=dose2,#
+				logdose=logdose,#
+				logdose2=logdose2,#
+				ntotal=ntotal.in,#
+				killed = killed.in,#
+				alive = alive.in)#
+		dataframe.out =#
+		data.frame(#
+			dose=dose,#
+			dose2=dose2,#
+			logdose=logdose,#
+			logdose2=logdose2,#
+			ntotal=ntotal.out,#
+			killed = killed.out,#
+			alive = alive.out)#
+#
+		Call$data <- dataframe.in#
+		d.glm <- eval.parent(Call)#
+		p.alpha <- n.s[i]/n#
+		cost.i <- cost(glm.y, predict(d.glm, dataframe.out, type = "response"))#
+		CV <- CV + p.alpha * cost.i#
+	}#
+	list(call = call, K = K, delta = CV)#
+}#
+cv.glm.binomial(m1,K=5)#
+cv.glm.binomial(m1,K=9)#
+cv.glm.binomial(m1,K=10)
+set.seed(999)#
+bin01 = list();#
+for (i in c(1:nrow(bliss))){#
+	bin01 = c(bin01, list(sample(#
+		c(0,1), ntotal[i], replace=TRUE, #
+		prob=c(killed[i]/ntotal[i],alive[i]/ntotal[i]))	))#
+}#
+#
+cost = function(y, yhat) mean((y - yhat)^2)#
+cv.glm.binomial <- function (glmfit, cost = function(y, yhat) mean((y - yhat)^2), #
+    K = n){#
+			# glmfit = m10#
+	n = max(ntotal)#
+	K.o = K#
+	# K = 5#
+	kvals <- unique(round(n/(1L:floor(n/2))))#
+	temp <- abs(kvals - K)#
+	if (!any(temp == 0)) #
+	  K <- kvals[temp == min(temp)][1L]#
+	if (K != K.o) #
+	  warning("K has been set to ", K)#
+	f <- ceiling(n/K)#
+	s <- sample(rep(1L:K, f), n)#
+	n.s <- table(s)#
+	glm.y <- glmfit$y#
+	ms <- max(s)#
+	CV <- 0#
+#
+	Call <- glmfit$call#
+	for (i in seq_len(ms)) {#
+		i = 1#
+		j.out <- seq_len(n)[(s == i)]#
+		j.in <- seq_len(n)[(s != i)]#
+#
+		ntotal.in = c()#
+		alive.in = c()#
+		killed.in = c()#
+		ntotal.out = alive.out = killed.out = c()#
+		for (kk in seq_len(nrow(bliss))){#
+			bin.in.kk    = bin01[[kk]][j.in] # include NA#
+			bin.in.kk    = bin.in.kk[!is.na(bin.in.kk)]#
+			ntotal.in.kk = length(bin.in.kk)#
+			alive.in.kk  = length(bin.in.kk[bin.in.kk==1])#
+			killed.in.kk = ntotal.in.kk - alive.in.kk#
+#
+			ntotal.in = c(ntotal.in,ntotal.in.kk)#
+			alive.in = c(alive.in, alive.in.kk)#
+			killed.in = c(killed.in,killed.in.kk)#
+#
+			bin.out.kk    = bin01[[kk]][j.out] # include NA#
+			bin.out.kk    = bin.out.kk[!is.na(bin.out.kk)]#
+			ntotal.out.kk = length(bin.out.kk)#
+			alive.out.kk  = length(bin.out.kk[bin.out.kk==1])#
+			killed.out.kk = ntotal.out.kk - alive.out.kk#
+#
+			ntotal.out = c(ntotal.out,ntotal.out.kk)#
+			alive.out = c(alive.out, alive.out.kk)#
+			killed.out = c(killed.out,killed.out.kk)#
+#
+		}#
+		dataframe.in =#
+			data.frame(#
+				dose=dose,#
+				dose2=dose2,#
+				logdose=logdose,#
+				logdose2=logdose2,#
+				ntotal=ntotal.in,#
+				killed = killed.in,#
+				alive = alive.in)#
+		dataframe.out =#
+		data.frame(#
+			dose=dose,#
+			dose2=dose2,#
+			logdose=logdose,#
+			logdose2=logdose2,#
+			ntotal=ntotal.out,#
+			killed = killed.out,#
+			alive = alive.out)#
+#
+		Call$data <- dataframe.in#
+		d.glm <- eval.parent(Call)#
+		p.alpha <- n.s[i]/n#
+		cost.i <- cost(glm.y, predict(d.glm, dataframe.out, type = "response"))#
+		CV <- CV + p.alpha * cost.i#
+	}#
+	list(call = call, K = K, delta = CV)#
+}#
+cv.glm.binomial(m1,K=5)#
+cv.glm.binomial(m1,K=9)#
+cv.glm.binomial(m1,K=10)
+cv.glm.binomial(m1,K=5)#
+cv.glm.binomial(m9,K=5)#
+cv.glm.binomial(m10,K=5)
+set.seed(999)#
+bin01 = list();#
+for (i in c(1:nrow(bliss))){#
+	bin01 = c(bin01, list(sample(#
+		c(0,1), ntotal[i], replace=TRUE, #
+		prob=c(killed[i]/ntotal[i],alive[i]/ntotal[i]))	))#
+}#
+#
+cost = function(y, yhat) mean((y - yhat)^2)#
+cv.glm.binomial <- function (glmfit, cost = function(y, yhat) mean((y - yhat)^2), #
+    K = n){#
+			# glmfit = m10#
+	n = max(ntotal)#
+	K.o = K#
+	# K = 5#
+	kvals <- unique(round(n/(1L:floor(n/2))))#
+	temp <- abs(kvals - K)#
+	if (!any(temp == 0)) #
+	  K <- kvals[temp == min(temp)][1L]#
+	if (K != K.o) #
+	  warning("K has been set to ", K)#
+	f <- ceiling(n/K)#
+	s <- sample(rep(1L:K, f), n)#
+	n.s <- table(s)#
+	glm.y <- glmfit$y#
+	ms <- max(s)#
+	CV <- 0#
+#
+	Call <- glmfit$call#
+	for (i in seq_len(ms)) {#
+		i = 1#
+		j.out <- seq_len(n)[(s == i)]#
+		j.in <- seq_len(n)[(s != i)]#
+#
+		ntotal.in = c()#
+		alive.in = c()#
+		killed.in = c()#
+		ntotal.out = alive.out = killed.out = c()#
+		for (kk in seq_len(nrow(bliss))){#
+			bin.in.kk    = bin01[[kk]][j.in] # include NA#
+			bin.in.kk    = bin.in.kk[!is.na(bin.in.kk)]#
+			ntotal.in.kk = length(bin.in.kk)#
+			alive.in.kk  = length(bin.in.kk[bin.in.kk==1])#
+			killed.in.kk = ntotal.in.kk - alive.in.kk#
+#
+			ntotal.in = c(ntotal.in,ntotal.in.kk)#
+			alive.in = c(alive.in, alive.in.kk)#
+			killed.in = c(killed.in,killed.in.kk)#
+#
+			bin.out.kk    = bin01[[kk]][j.out] # include NA#
+			bin.out.kk    = bin.out.kk[!is.na(bin.out.kk)]#
+			ntotal.out.kk = length(bin.out.kk)#
+			alive.out.kk  = length(bin.out.kk[bin.out.kk==1])#
+			killed.out.kk = ntotal.out.kk - alive.out.kk#
+#
+			ntotal.out = c(ntotal.out,ntotal.out.kk)#
+			alive.out = c(alive.out, alive.out.kk)#
+			killed.out = c(killed.out,killed.out.kk)#
+#
+		}#
+		dataframe.in =#
+			data.frame(#
+				dose=dose,#
+				dose2=dose2,#
+				logdose=logdose,#
+				logdose2=logdose2,#
+				ntotal=ntotal.in,#
+				killed = killed.in,#
+				alive = alive.in)#
+		dataframe.out =#
+		data.frame(#
+			dose=dose,#
+			dose2=dose2,#
+			logdose=logdose,#
+			logdose2=logdose2,#
+			ntotal=ntotal.out,#
+			killed = killed.out,#
+			alive = alive.out)#
+#
+		Call$data <- dataframe.in#
+		d.glm <- eval.parent(Call)#
+		p.alpha <- n.s[i]/n#
+		cost.i <- cost(glm.y, predict(d.glm, dataframe.out, type = "response"))#
+		CV <- CV + p.alpha * cost.i#
+	}#
+	list(call = call, K = K, delta = CV)#
+}#
+cv.glm.binomial(m1,K=5)#
+cv.glm.binomial(m9,K=5)#
+cv.glm.binomial(m10,K=5)
+date
+date()
+?date
+Sys.time()
+op <- options(digits.secs=6)
+Sys.time()
+m1
+options(op)
+m1
+bliss
+cv.glm.binomial(m1,K=50)
+cv.glm.binomial(m1,K=63)
+cv.glm.binomial(m9,K=63)
+cv.glm.binomial(m10,K=63)
+cv1  = cv.glm.binomial(m1,K=5)#
+cv9  = cv.glm.binomial(m9,K=5)#
+cv10 = cv.glm.binomial(m10,K=5)
+cv1$delta
+cv9$delta
+cv10$delta
+#!/usr/bin/R#
+#
+rm(list=ls())#
+options(digits=3)#
+###########################################################################
+# Functions#
+###########################################################################
+res_Plots = function(m,modelname){#
+  opar = par(mfrow = c(2,2), oma = c(0, 0, 1.1, 0))#
+  plot(m,main=modelname)#
+  par(opar)#
+}#
+#
+###########################################################################
+# Data initialization#
+###########################################################################
+conc     = c(1.6907,1.7242,1.7552,1.7842,1.8113,1.8369,1.8610,1.8839)#
+dose     = exp(conc)*10#
+ntotal   = c(59,60,62,56,63,59,62,60)#
+killed   = c(6,13,18,28,52,53,61,60)#
+alive    = ntotal - killed#
+logdose  = log(dose)#
+dose2    = dose^2#
+logdose2 = log(dose)^2#
+bliss    = data.frame(dose,dose2,logdose,logdose2,ntotal,killed,alive)#
+#
+###########################################################################
+# GLM models#
+###########################################################################
+#
+m1 = glm(#
+  cbind(killed,alive)~dose,#
+  binomial('cloglog'))#
+m2 = glm(#
+  cbind(killed,alive)~logdose,#
+  binomial('cloglog'))#
+m3 = glm(#
+  cbind(killed,alive)~dose+dose2,#
+  binomial('logit'))#
+m4 = glm(#
+  cbind(killed,alive)~logdose+logdose2,#
+  binomial('logit'))#
+m5 = glm(#
+  cbind(killed,alive)~logdose+logdose2,#
+  binomial('probit'))#
+m6 = glm(#
+  cbind(killed,alive)~dose+dose2,#
+  binomial('probit'))#
+m7 = glm(#
+  cbind(killed,alive)~dose+dose2,#
+  binomial('cloglog'))#
+m8 = glm(#
+  cbind(killed,alive)~logdose+logdose2,#
+  binomial('cloglog'))#
+m9 = glm(#
+  cbind(killed,alive)~dose,#
+  binomial('probit'))#
+m10 = glm(#
+  cbind(killed,alive)~dose,#
+  binomial('logit'))#
+m11 = glm(#
+  cbind(killed,alive)~logdose,#
+  binomial('probit'))#
+m12 = glm(#
+  cbind(killed,alive)~logdose,#
+  binomial('logit'))#
+#
+#
+# logdose is linear with dose#
+ml = lm(logdose~dose)#
+summary(ml)#
+#
+# plot model qqplot, residual-fitted plot#
+res_Plots(m1,"m1_cloglog")#
+res_Plots(m9,"m9_probit")#
+res_Plots(m10,"m10_logit")#
+#
+#
+# plot out data range#
+doserange=c(48:70)#
+plot(#
+  dose,killed/ntotal,#
+  xlim = range(doserange),#
+  xlab = "dose of CS2, mg/L",#
+  ylab = "Morality")#
+lines(#
+  doserange,#
+  predict(m1,#
+    newdata = data.frame(dose=doserange),type='response'),#
+  col = 1,lw = 2)#
+lines(#
+  doserange,#
+  predict(m9,#
+    newdata = data.frame(dose=doserange),type='response'),#
+  col = 2,lw = 2)#
+lines(#
+  doserange,#
+  predict(m10,#
+    newdata = data.frame(dose=doserange),type='response'),#
+  col = 3,lw = 2)#
+lines(#
+  doserange,#
+  predict(m3,#
+    newdata=data.frame(dose=doserange,dose2=doserange^2),type='response'),#
+  col = 4,lw = 2)#
+legend(#
+  "topleft",#
+  c("cloglog~dose","probit~dose","logit~dose","logit~dose+dos2"),#
+  pch = "-",#
+  col = 1:4)#
+#
+# plot data range#
+plot(dose,killed/ntotal,#
+  xlab = "dose of CS2, mg/L",#
+  ylab = "Morality")#
+lines(dose,m1$fit, col = 1,lw = 2)#
+lines(dose,m9$fit, col = 2,lw = 2)#
+lines(dose,m10$fit,col = 3,lw = 2)#
+legend(#
+  "topleft",#
+  c("cloglog~dose","probit~dose","logit~dose"),#
+  pch = "-",#
+  col = 1:3)#
+#
+#
+# Akalke weight#
+aicsModelName = paste("m",c(1,9,10),sep="")#
+aics = data.frame(#
+  aicsModelName,#
+  c(m1$aic,m9$aic,m10$aic),row.names=NULL)#
+colnames(aics) = c("model","AIC")#
+aics = aics[order(aics$AIC),]#
+for(i in 1:dim(aics)[1]){#
+  aics$diff[i] = aics$AIC[i]-aics$AIC[1]#
+}#
+aics$wi = exp(-0.5*aics$diff)#
+aics$aic.weights = aics$wi/sum(aics$wi)#
+#
+# Goodness-fit #
+Chi2 = function(m){#
+  Pi_hat = m$fit#
+  sum(((killed - ntotal*Pi_hat)^2) / (ntotal*Pi_hat *(1-Pi_hat)))#
+}#
+Chi2_m1  = Chi2(m1)#
+# [1] 3.28#
+Chi2_m9  = Chi2(m9)#
+# [1] 7.85#
+Chi2_m10 = Chi2(m10)#
+# [1] 8.45#
+P_m1     = 1- pchisq(Chi2_m1,df.residual(m1))#
+# [1] 0.772#
+P_m9     = 1- pchisq(Chi2_m9,df.residual(m9))#
+# [1] 0.249#
+P_m10    = 1- pchisq(Chi2_m10,df.residual(m10))#
+# [1] 0.207#
+#
+# Confidence interverl#
+confint(m1)#
+# Waiting for profiling to be done...#
+#               2.5 % 97.5 %#
+# (Intercept) -25.953 -18.80#
+# dose          0.312   0.43#
+confint(m9)#
+# Waiting for profiling to be done...#
+#               2.5 %  97.5 %#
+# (Intercept) -22.719 -16.829#
+# dose          0.286   0.386#
+confint(m10)#
+# Waiting for profiling to be done...#
+#               2.5 %  97.5 %#
+# (Intercept) -40.257 -28.726#
+# dose          0.489   0.683#
+#
+#
+#
+###########################################################################
+# Cross-validation#
+###########################################################################
+#
+# Random set binary data to fit experiment data#
+# 0 is dead#
+# 1 is alive #
+set.seed(999)#
+bin01 = list();#
+for (i in c(1:nrow(bliss))){#
+  bin01 = c(bin01, list(sample(#
+    c(0,1), ntotal[i], replace=TRUE, #
+    prob=c(killed[i]/ntotal[i],alive[i]/ntotal[i])) ))#
+}#
+#
+cost = function(y, yhat) mean((y - yhat)^2)#
+cv.glm.binomial = function (glmfit, cost = function(y, yhat) mean((y - yhat)^2), #
+    K = n){#
+  n = max(ntotal)#
+  K.o = K#
+  kvals = unique(round(n/(1L:floor(n/2))))#
+  temp = abs(kvals - K)#
+  if (!any(temp == 0)) #
+    K = kvals[temp == min(temp)][1L]#
+  if (K != K.o) #
+    warning("K has been set to ", K)#
+  f = ceiling(n/K)#
+  s = sample(rep(1L:K, f), n)#
+  n.s = table(s)#
+  glm.y = glmfit$y#
+  ms = max(s)#
+  CV = 0#
+#
+  Call = glmfit$call#
+  for (i in seq_len(ms)) {#
+    i = 1#
+    j.out = seq_len(n)[(s == i)]#
+    j.in = seq_len(n)[(s != i)]#
+#
+    ntotal.in = alive.in = killed.in = c()#
+    ntotal.out = alive.out = killed.out = c()#
+    for (kk in seq_len(nrow(bliss))){#
+      bin.in.kk     = bin01[[kk]][j.in] # include NA#
+      bin.in.kk     = bin.in.kk[!is.na(bin.in.kk)]#
+      ntotal.in.kk  = length(bin.in.kk)#
+      alive.in.kk   = length(bin.in.kk[bin.in.kk==1])#
+      killed.in.kk  = ntotal.in.kk - alive.in.kk#
+#
+      ntotal.in     = c(ntotal.in,ntotal.in.kk)#
+      alive.in      = c(alive.in, alive.in.kk)#
+      killed.in     = c(killed.in,killed.in.kk)#
+#
+      bin.out.kk    = bin01[[kk]][j.out] # include NA#
+      bin.out.kk    = bin.out.kk[!is.na(bin.out.kk)]#
+      ntotal.out.kk = length(bin.out.kk)#
+      alive.out.kk  = length(bin.out.kk[bin.out.kk==1])#
+      killed.out.kk = ntotal.out.kk - alive.out.kk#
+#
+      ntotal.out    = c(ntotal.out,ntotal.out.kk)#
+      alive.out     = c(alive.out, alive.out.kk)#
+      killed.out    = c(killed.out,killed.out.kk)#
+    }#
+    dataframe.in =#
+      data.frame(#
+        dose     = dose,#
+        dose2    = dose2,#
+        logdose  = logdose,#
+        logdose2 = logdose2,#
+        ntotal   = ntotal.in,#
+        killed   = killed.in,#
+        alive    = alive.in)#
+    dataframe.out =#
+	    data.frame(#
+	      dose     = dose,#
+	      dose2    = dose2,#
+	      logdose  = logdose,#
+	      logdose2 = logdose2,#
+	      ntotal   = ntotal.out,#
+	      killed   = killed.out,#
+	      alive    = alive.out)#
+#
+    Call$data = dataframe.in#
+    d.glm     = eval.parent(Call)#
+    p.alpha   = n.s[i]/n#
+    cost.i    = cost(glm.y, #
+			predict(d.glm, dataframe.out, type = "response"))#
+    CV        = CV + p.alpha * cost.i#
+  }#
+  list(call = call, K = K, delta = CV)#
+}#
+cv1  = cv.glm.binomial(m1,K=5)#
+# 0.00144 #
+cv9  = cv.glm.binomial(m9,K=5)#
+# 0.00272 #
+cv10 = cv.glm.binomial(m10,K=5)#
+# 0.00294
+#!/usr/bin/R#
+#
+rm(list=ls())#
+options(digits=3)#
+###########################################################################
+# Functions#
+###########################################################################
+res_Plots = function(m,modelname){#
+  opar = par(mfrow = c(2,2), oma = c(0, 0, 1.1, 0))#
+  plot(m,main=modelname)#
+  par(opar)#
+}#
+#
+cost = function(y, yhat) mean((y - yhat)^2)#
+#
+cv.glm.binomial = function (glmfit, #
+	cost = function(y, yhat) mean((y - yhat)^2), K = n){#
+  n     = max(ntotal)#
+  K.o   = K#
+  kvals = unique(round(n/(1L:floor(n/2))))#
+  temp  = abs(kvals - K)#
+  if (!any(temp == 0)) #
+    K = kvals[temp == min(temp)][1L]#
+  if (K != K.o) #
+    warning("K has been set to ", K)#
+  f     = ceiling(n/K)#
+  s     = sample(rep(1L:K, f), n)#
+  n.s   = table(s)#
+  glm.y = glmfit$y#
+  ms    = max(s)#
+  CV    = 0#
+#
+  Call = glmfit$call#
+  for (i in seq_len(ms)) {#
+    i = 1#
+    j.out = seq_len(n)[(s == i)]#
+    j.in  = seq_len(n)[(s != i)]#
+#
+    ntotal.in  = alive.in = killed.in = c()#
+    ntotal.out = alive.out = killed.out = c()#
+    for (kk in seq_len(nrow(bliss))){#
+      bin.in.kk     = bin01[[kk]][j.in] # include NA#
+      bin.in.kk     = bin.in.kk[!is.na(bin.in.kk)]#
+      ntotal.in.kk  = length(bin.in.kk)#
+      alive.in.kk   = length(bin.in.kk[bin.in.kk==1])#
+      killed.in.kk  = ntotal.in.kk - alive.in.kk#
+#
+      ntotal.in     = c(ntotal.in,ntotal.in.kk)#
+      alive.in      = c(alive.in, alive.in.kk)#
+      killed.in     = c(killed.in,killed.in.kk)#
+#
+      bin.out.kk    = bin01[[kk]][j.out] # include NA#
+      bin.out.kk    = bin.out.kk[!is.na(bin.out.kk)]#
+      ntotal.out.kk = length(bin.out.kk)#
+      alive.out.kk  = length(bin.out.kk[bin.out.kk==1])#
+      killed.out.kk = ntotal.out.kk - alive.out.kk#
+#
+      ntotal.out    = c(ntotal.out,ntotal.out.kk)#
+      alive.out     = c(alive.out, alive.out.kk)#
+      killed.out    = c(killed.out,killed.out.kk)#
+    }#
+    dataframe.in =#
+      data.frame(#
+        dose     = dose,#
+        dose2    = dose2,#
+        logdose  = logdose,#
+        logdose2 = logdose2,#
+        ntotal   = ntotal.in,#
+        killed   = killed.in,#
+        alive    = alive.in)#
+    dataframe.out =#
+      data.frame(#
+        dose     = dose,#
+        dose2    = dose2,#
+        logdose  = logdose,#
+        logdose2 = logdose2,#
+        ntotal   = ntotal.out,#
+        killed   = killed.out,#
+        alive    = alive.out)#
+#
+    Call$data = dataframe.in#
+    d.glm     = eval.parent(Call)#
+    p.alpha   = n.s[i]/n#
+    cost.i    = cost(glm.y, #
+      predict(d.glm, dataframe.out, type = "response"))#
+    CV        = CV + p.alpha * cost.i#
+  }#
+  list(call = call, K = K, delta = CV)#
+}#
+#
+###########################################################################
+# Data initialization#
+###########################################################################
+conc     = c(1.6907,1.7242,1.7552,1.7842,1.8113,1.8369,1.8610,1.8839)#
+dose     = exp(conc)*10#
+ntotal   = c(59,60,62,56,63,59,62,60)#
+killed   = c(6,13,18,28,52,53,61,60)#
+alive    = ntotal - killed#
+logdose  = log(dose)#
+dose2    = dose^2#
+logdose2 = log(dose)^2#
+bliss    = data.frame(dose,dose2,logdose,logdose2,ntotal,killed,alive)#
+#
+###########################################################################
+# GLM models#
+###########################################################################
+#
+m1 = glm(#
+  cbind(killed,alive)~dose,#
+  binomial('cloglog'))#
+m2 = glm(#
+  cbind(killed,alive)~logdose,#
+  binomial('cloglog'))#
+m3 = glm(#
+  cbind(killed,alive)~dose+dose2,#
+  binomial('logit'))#
+m4 = glm(#
+  cbind(killed,alive)~logdose+logdose2,#
+  binomial('logit'))#
+m5 = glm(#
+  cbind(killed,alive)~logdose+logdose2,#
+  binomial('probit'))#
+m6 = glm(#
+  cbind(killed,alive)~dose+dose2,#
+  binomial('probit'))#
+m7 = glm(#
+  cbind(killed,alive)~dose+dose2,#
+  binomial('cloglog'))#
+m8 = glm(#
+  cbind(killed,alive)~logdose+logdose2,#
+  binomial('cloglog'))#
+m9 = glm(#
+  cbind(killed,alive)~dose,#
+  binomial('probit'))#
+m10 = glm(#
+  cbind(killed,alive)~dose,#
+  binomial('logit'))#
+m11 = glm(#
+  cbind(killed,alive)~logdose,#
+  binomial('probit'))#
+m12 = glm(#
+  cbind(killed,alive)~logdose,#
+  binomial('logit'))#
+#
+#
+# logdose is linear with dose#
+ml = lm(logdose~dose)#
+summary(ml)#
+#
+# plot model qqplot, residual-fitted plot#
+res_Plots(m1,"m1_cloglog")#
+res_Plots(m9,"m9_probit")#
+res_Plots(m10,"m10_logit")#
+#
+#
+# plot out data range#
+doserange=c(48:70)#
+plot(#
+  dose,killed/ntotal,#
+  xlim = range(doserange),#
+  xlab = "dose of CS2, mg/L",#
+  ylab = "Morality")#
+lines(#
+  doserange,#
+  predict(m1,#
+    newdata = data.frame(dose=doserange),type='response'),#
+  col = 1,lw = 2)#
+lines(#
+  doserange,#
+  predict(m9,#
+    newdata = data.frame(dose=doserange),type='response'),#
+  col = 2,lw = 2)#
+lines(#
+  doserange,#
+  predict(m10,#
+    newdata = data.frame(dose=doserange),type='response'),#
+  col = 3,lw = 2)#
+lines(#
+  doserange,#
+  predict(m3,#
+    newdata=data.frame(dose=doserange,dose2=doserange^2),type='response'),#
+  col = 4,lw = 2)#
+legend(#
+  "topleft",#
+  c("cloglog~dose","probit~dose","logit~dose","logit~dose+dos2"),#
+  pch = "-",#
+  col = 1:4)#
+#
+# plot data range#
+plot(dose,killed/ntotal,#
+  xlab = "dose of CS2, mg/L",#
+  ylab = "Morality")#
+lines(dose,m1$fit, col = 1,lw = 2)#
+lines(dose,m9$fit, col = 2,lw = 2)#
+lines(dose,m10$fit,col = 3,lw = 2)#
+legend(#
+  "topleft",#
+  c("cloglog~dose","probit~dose","logit~dose"),#
+  pch = "-",#
+  col = 1:3)#
+#
+#
+# Akalke weight#
+aicsModelName = paste("m",c(1,9,10),sep="")#
+aics = data.frame(#
+  aicsModelName,#
+  c(m1$aic,m9$aic,m10$aic),row.names=NULL)#
+colnames(aics) = c("model","AIC")#
+aics = aics[order(aics$AIC),]#
+for(i in 1:dim(aics)[1]){#
+  aics$diff[i] = aics$AIC[i]-aics$AIC[1]#
+}#
+aics$wi = exp(-0.5*aics$diff)#
+aics$aic.weights = aics$wi/sum(aics$wi)#
+#
+# Goodness-fit #
+Chi2 = function(m){#
+  Pi_hat = m$fit#
+  sum(((killed - ntotal*Pi_hat)^2) / (ntotal*Pi_hat *(1-Pi_hat)))#
+}#
+Chi2_m1  = Chi2(m1)#
+# [1] 3.28#
+Chi2_m9  = Chi2(m9)#
+# [1] 7.85#
+Chi2_m10 = Chi2(m10)#
+# [1] 8.45#
+P_m1     = 1- pchisq(Chi2_m1,df.residual(m1))#
+# [1] 0.772#
+P_m9     = 1- pchisq(Chi2_m9,df.residual(m9))#
+# [1] 0.249#
+P_m10    = 1- pchisq(Chi2_m10,df.residual(m10))#
+# [1] 0.207#
+#
+# Confidence interverl#
+confint(m1)#
+# Waiting for profiling to be done...#
+#               2.5 % 97.5 %#
+# (Intercept) -25.953 -18.80#
+# dose          0.312   0.43#
+confint(m9)#
+# Waiting for profiling to be done...#
+#               2.5 %  97.5 %#
+# (Intercept) -22.719 -16.829#
+# dose          0.286   0.386#
+confint(m10)#
+# Waiting for profiling to be done...#
+#               2.5 %  97.5 %#
+# (Intercept) -40.257 -28.726#
+# dose          0.489   0.683#
+#
+#
+#
+###########################################################################
+# Cross-validation#
+###########################################################################
+#
+# Random set binary data to fit experiment data#
+# 0 is dead#
+# 1 is alive #
+set.seed(999)#
+bin01 = list();#
+for (i in c(1:nrow(bliss))){#
+  bin01 = c(bin01, list(sample(#
+    c(0,1), ntotal[i], replace=TRUE, #
+    prob=c(killed[i]/ntotal[i],alive[i]/ntotal[i])) ))#
+}#
+#
+cv1  = cv.glm.binomial(m1,K=5)#
+# 0.00144 #
+cv9  = cv.glm.binomial(m9,K=5)#
+# 0.00272 #
+cv10 = cv.glm.binomial(m10,K=5)#
+# 0.00294
+cv1
+aics
+#!/usr/bin/R#
+###########################################################################
+# Stat 486 Statistical Consulting	Fall 2011#
+# Project 3: Beetle Mortality Data – Generalized Linear Models#
+# Due on November 2, 2011#
+# Yun Xu#
+# Email: yxu7@uic.edu#
+###########################################################################
+#
+rm(list=ls())#
+options(digits=3)#
+#
+###########################################################################
+# Functions#
+###########################################################################
+res_Plots = function(m,modelname){#
+  opar = par(mfrow = c(2,2), oma = c(0, 0, 1.1, 0))#
+  plot(m,main=modelname)#
+  par(opar)#
+}#
+#
+cost = function(y, yhat) mean((y - yhat)^2)#
+#
+cv.glm.binomial = function (glmfit, #
+	cost = function(y, yhat) mean((y - yhat)^2), K = n){#
+  n     = max(ntotal)#
+  K.o   = K#
+  kvals = unique(round(n/(1L:floor(n/2))))#
+  temp  = abs(kvals - K)#
+  if (!any(temp == 0)) #
+    K = kvals[temp == min(temp)][1L]#
+  if (K != K.o) #
+    warning("K has been set to ", K)#
+  f     = ceiling(n/K)#
+  s     = sample(rep(1L:K, f), n)#
+  n.s   = table(s)#
+  glm.y = glmfit$y#
+  ms    = max(s)#
+  CV    = 0#
+#
+  Call = glmfit$call#
+  for (i in seq_len(ms)) {#
+    i = 1#
+    j.out = seq_len(n)[(s == i)]#
+    j.in  = seq_len(n)[(s != i)]#
+#
+    ntotal.in  = alive.in = killed.in = c()#
+    ntotal.out = alive.out = killed.out = c()#
+    for (kk in seq_len(nrow(bliss))){#
+      bin.in.kk     = bin01[[kk]][j.in] # include NA#
+      bin.in.kk     = bin.in.kk[!is.na(bin.in.kk)]#
+      ntotal.in.kk  = length(bin.in.kk)#
+      alive.in.kk   = length(bin.in.kk[bin.in.kk==1])#
+      killed.in.kk  = ntotal.in.kk - alive.in.kk#
+#
+      ntotal.in     = c(ntotal.in,ntotal.in.kk)#
+      alive.in      = c(alive.in, alive.in.kk)#
+      killed.in     = c(killed.in,killed.in.kk)#
+#
+      bin.out.kk    = bin01[[kk]][j.out] # include NA#
+      bin.out.kk    = bin.out.kk[!is.na(bin.out.kk)]#
+      ntotal.out.kk = length(bin.out.kk)#
+      alive.out.kk  = length(bin.out.kk[bin.out.kk==1])#
+      killed.out.kk = ntotal.out.kk - alive.out.kk#
+#
+      ntotal.out    = c(ntotal.out,ntotal.out.kk)#
+      alive.out     = c(alive.out, alive.out.kk)#
+      killed.out    = c(killed.out,killed.out.kk)#
+    }#
+    dataframe.in =#
+      data.frame(#
+        dose     = dose,#
+        dose2    = dose2,#
+        logdose  = logdose,#
+        logdose2 = logdose2,#
+        ntotal   = ntotal.in,#
+        killed   = killed.in,#
+        alive    = alive.in)#
+    dataframe.out =#
+      data.frame(#
+        dose     = dose,#
+        dose2    = dose2,#
+        logdose  = logdose,#
+        logdose2 = logdose2,#
+        ntotal   = ntotal.out,#
+        killed   = killed.out,#
+        alive    = alive.out)#
+#
+    Call$data = dataframe.in#
+    d.glm     = eval.parent(Call)#
+    p.alpha   = n.s[i]/n#
+    cost.i    = cost(glm.y, #
+      predict(d.glm, dataframe.out, type = "response"))#
+    CV        = CV + p.alpha * cost.i#
+  }#
+  list(call = call, K = K, delta = CV)#
+}#
+#
+###########################################################################
+# Data initialization#
+###########################################################################
+conc     = c(1.6907,1.7242,1.7552,1.7842,1.8113,1.8369,1.8610,1.8839)#
+dose     = exp(conc)*10#
+ntotal   = c(59,60,62,56,63,59,62,60)#
+killed   = c(6,13,18,28,52,53,61,60)#
+alive    = ntotal - killed#
+logdose  = log(dose)#
+dose2    = dose^2#
+logdose2 = log(dose)^2#
+bliss    = data.frame(dose,dose2,logdose,logdose2,ntotal,killed,alive)#
+#
+###########################################################################
+# GLM models#
+###########################################################################
+#
+m1 = glm(#
+  cbind(killed,alive)~dose,#
+  binomial('cloglog'))#
+m2 = glm(#
+  cbind(killed,alive)~logdose,#
+  binomial('cloglog'))#
+m3 = glm(#
+  cbind(killed,alive)~dose+dose2,#
+  binomial('logit'))#
+m4 = glm(#
+  cbind(killed,alive)~logdose+logdose2,#
+  binomial('logit'))#
+m5 = glm(#
+  cbind(killed,alive)~logdose+logdose2,#
+  binomial('probit'))#
+m6 = glm(#
+  cbind(killed,alive)~dose+dose2,#
+  binomial('probit'))#
+m7 = glm(#
+  cbind(killed,alive)~dose+dose2,#
+  binomial('cloglog'))#
+m8 = glm(#
+  cbind(killed,alive)~logdose+logdose2,#
+  binomial('cloglog'))#
+m9 = glm(#
+  cbind(killed,alive)~dose,#
+  binomial('probit'))#
+m10 = glm(#
+  cbind(killed,alive)~dose,#
+  binomial('logit'))#
+m11 = glm(#
+  cbind(killed,alive)~logdose,#
+  binomial('probit'))#
+m12 = glm(#
+  cbind(killed,alive)~logdose,#
+  binomial('logit'))#
+#
+#
+# logdose is linear with dose#
+ml = lm(logdose~dose)#
+summary(ml)#
+#
+# plot model qqplot, residual-fitted plot#
+res_Plots(m1,"m1_cloglog")#
+res_Plots(m9,"m9_probit")#
+res_Plots(m10,"m10_logit")#
+#
+#
+# plot out data range#
+doserange=c(48:70)#
+plot(#
+  dose,killed/ntotal,#
+  xlim = range(doserange),#
+  xlab = "dose of CS2, mg/L",#
+  ylab = "Morality")#
+lines(#
+  doserange,#
+  predict(m1,#
+    newdata = data.frame(dose=doserange),type='response'),#
+  col = 1,lw = 2)#
+lines(#
+  doserange,#
+  predict(m9,#
+    newdata = data.frame(dose=doserange),type='response'),#
+  col = 2,lw = 2)#
+lines(#
+  doserange,#
+  predict(m10,#
+    newdata = data.frame(dose=doserange),type='response'),#
+  col = 3,lw = 2)#
+lines(#
+  doserange,#
+  predict(m3,#
+    newdata=data.frame(dose=doserange,dose2=doserange^2),type='response'),#
+  col = 4,lw = 2)#
+legend(#
+  "topleft",#
+  c("cloglog~dose","probit~dose","logit~dose","logit~dose+dos2"),#
+  pch = "-",#
+  col = 1:4)#
+#
+# plot data range#
+plot(dose,killed/ntotal,#
+  xlab = "dose of CS2, mg/L",#
+  ylab = "Morality")#
+lines(dose,m1$fit, col = 1,lw = 2)#
+lines(dose,m9$fit, col = 2,lw = 2)#
+lines(dose,m10$fit,col = 3,lw = 2)#
+legend(#
+  "topleft",#
+  c("cloglog~dose","probit~dose","logit~dose"),#
+  pch = "-",#
+  col = 1:3)#
+#
+#
+# Akalke weight#
+aicsModelName = paste("m",c(1,9,10),sep="")#
+aics = data.frame(#
+  aicsModelName,#
+  c(m1$aic,m9$aic,m10$aic),row.names=NULL)#
+colnames(aics) = c("model","AIC")#
+aics = aics[order(aics$AIC),]#
+for(i in 1:dim(aics)[1]){#
+  aics$diff[i] = aics$AIC[i]-aics$AIC[1]#
+}#
+aics$wi = exp(-0.5*aics$diff)#
+aics$aic.weights = aics$wi/sum(aics$wi)#
+#   model  AIC diff     wi aic.weights#
+# 1    m1 33.6 0.00 1.0000      0.8828#
+# 2    m9 38.6 4.94 0.0847      0.0748#
+# 3   m10 39.7 6.07 0.0480      0.0424#
+#
+# Goodness-fit #
+Chi2 = function(m){#
+  Pi_hat = m$fit#
+  sum(((killed - ntotal*Pi_hat)^2) / (ntotal*Pi_hat *(1-Pi_hat)))#
+}#
+Chi2_m1  = Chi2(m1)#
+# [1] 3.28#
+Chi2_m9  = Chi2(m9)#
+# [1] 7.85#
+Chi2_m10 = Chi2(m10)#
+# [1] 8.45#
+P_m1     = 1- pchisq(Chi2_m1,df.residual(m1))#
+# [1] 0.772#
+P_m9     = 1- pchisq(Chi2_m9,df.residual(m9))#
+# [1] 0.249#
+P_m10    = 1- pchisq(Chi2_m10,df.residual(m10))#
+# [1] 0.207#
+#
+# Confidence interverl#
+confint(m1)#
+# Waiting for profiling to be done...#
+#               2.5 % 97.5 %#
+# (Intercept) -25.953 -18.80#
+# dose          0.312   0.43#
+confint(m9)#
+# Waiting for profiling to be done...#
+#               2.5 %  97.5 %#
+# (Intercept) -22.719 -16.829#
+# dose          0.286   0.386#
+confint(m10)#
+# Waiting for profiling to be done...#
+#               2.5 %  97.5 %#
+# (Intercept) -40.257 -28.726#
+# dose          0.489   0.683#
+#
+#
+#
+###########################################################################
+# Cross-validation#
+###########################################################################
+#
+# Random set binary data to fit experiment data#
+# 0 is dead#
+# 1 is alive #
+set.seed(999)#
+bin01 = list();#
+for (i in c(1:nrow(bliss))){#
+  bin01 = c(bin01, list(sample(#
+    c(0,1), ntotal[i], replace=TRUE, #
+    prob=c(killed[i]/ntotal[i],alive[i]/ntotal[i])) ))#
+}#
+#
+cv1  = cv.glm.binomial(m1,K=5)#
+# 0.00144 #
+cv9  = cv.glm.binomial(m9,K=5)#
+# 0.00272 #
+cv10 = cv.glm.binomial(m10,K=5)#
+# 0.00294
+#!/usr/bin/R#
+###########################################################################
+# Stat 486 Statistical Consulting	Fall 2011#
+# Project 3: Beetle Mortality Data – Generalized Linear Models#
+# Due on November 2, 2011#
+# Yun Xu#
+# Email: yxu7@uic.edu#
+###########################################################################
+#
+rm(list=ls())#
+options(digits=3)#
+#
+###########################################################################
+# Functions#
+###########################################################################
+res_Plots = function(m,modelname){#
+  opar = par(mfrow = c(2,2), oma = c(0, 0, 1.1, 0))#
+  plot(m,main=modelname)#
+  par(opar)#
+}#
+#
+cost = function(y, yhat) mean((y - yhat)^2)#
+#
+cv.glm.binomial = function (glmfit, #
+	cost = function(y, yhat) mean((y - yhat)^2), K = n){#
+  n     = max(ntotal)#
+  K.o   = K#
+  kvals = unique(round(n/(1L:floor(n/2))))#
+  temp  = abs(kvals - K)#
+  if (!any(temp == 0)) #
+    K = kvals[temp == min(temp)][1L]#
+  if (K != K.o) #
+    warning("K has been set to ", K)#
+  f     = ceiling(n/K)#
+  s     = sample(rep(1L:K, f), n)#
+  n.s   = table(s)#
+  glm.y = glmfit$y#
+  ms    = max(s)#
+  CV    = 0#
+#
+  Call = glmfit$call#
+  for (i in seq_len(ms)) {#
+    i = 1#
+    j.out = seq_len(n)[(s == i)]#
+    j.in  = seq_len(n)[(s != i)]#
+#
+    ntotal.in  = alive.in = killed.in = c()#
+    ntotal.out = alive.out = killed.out = c()#
+    for (kk in seq_len(nrow(bliss))){#
+      bin.in.kk     = bin01[[kk]][j.in] # include NA#
+      bin.in.kk     = bin.in.kk[!is.na(bin.in.kk)]#
+      ntotal.in.kk  = length(bin.in.kk)#
+      alive.in.kk   = length(bin.in.kk[bin.in.kk==1])#
+      killed.in.kk  = ntotal.in.kk - alive.in.kk#
+#
+      ntotal.in     = c(ntotal.in,ntotal.in.kk)#
+      alive.in      = c(alive.in, alive.in.kk)#
+      killed.in     = c(killed.in,killed.in.kk)#
+#
+      bin.out.kk    = bin01[[kk]][j.out] # include NA#
+      bin.out.kk    = bin.out.kk[!is.na(bin.out.kk)]#
+      ntotal.out.kk = length(bin.out.kk)#
+      alive.out.kk  = length(bin.out.kk[bin.out.kk==1])#
+      killed.out.kk = ntotal.out.kk - alive.out.kk#
+#
+      ntotal.out    = c(ntotal.out,ntotal.out.kk)#
+      alive.out     = c(alive.out, alive.out.kk)#
+      killed.out    = c(killed.out,killed.out.kk)#
+    }#
+    dataframe.in =#
+      data.frame(#
+        dose     = dose,#
+        dose2    = dose2,#
+        logdose  = logdose,#
+        logdose2 = logdose2,#
+        ntotal   = ntotal.in,#
+        killed   = killed.in,#
+        alive    = alive.in)#
+    dataframe.out =#
+      data.frame(#
+        dose     = dose,#
+        dose2    = dose2,#
+        logdose  = logdose,#
+        logdose2 = logdose2,#
+        ntotal   = ntotal.out,#
+        killed   = killed.out,#
+        alive    = alive.out)#
+#
+    Call$data = dataframe.in#
+    d.glm     = eval.parent(Call)#
+    p.alpha   = n.s[i]/n#
+    cost.i    = cost(glm.y, #
+      predict(d.glm, dataframe.out, type = "response"))#
+    CV        = CV + p.alpha * cost.i#
+  }#
+  list(call = call, K = K, delta = CV)#
+}#
+#
+###########################################################################
+# Data initialization#
+###########################################################################
+conc     = c(1.6907,1.7242,1.7552,1.7842,1.8113,1.8369,1.8610,1.8839)#
+dose     = exp(conc)*10#
+ntotal   = c(59,60,62,56,63,59,62,60)#
+killed   = c(6,13,18,28,52,53,61,60)#
+alive    = ntotal - killed#
+logdose  = log(dose)#
+dose2    = dose^2#
+logdose2 = log(dose)^2#
+bliss    = data.frame(dose,dose2,logdose,logdose2,ntotal,killed,alive)#
+#
+###########################################################################
+# GLM models#
+###########################################################################
+#
+m1 = glm(#
+  cbind(killed,alive)~dose,#
+  binomial('cloglog'))#
+m2 = glm(#
+  cbind(killed,alive)~logdose,#
+  binomial('cloglog'))#
+m3 = glm(#
+  cbind(killed,alive)~dose+dose2,#
+  binomial('logit'))#
+m4 = glm(#
+  cbind(killed,alive)~logdose+logdose2,#
+  binomial('logit'))#
+m5 = glm(#
+  cbind(killed,alive)~logdose+logdose2,#
+  binomial('probit'))#
+m6 = glm(#
+  cbind(killed,alive)~dose+dose2,#
+  binomial('probit'))#
+m7 = glm(#
+  cbind(killed,alive)~dose+dose2,#
+  binomial('cloglog'))#
+m8 = glm(#
+  cbind(killed,alive)~logdose+logdose2,#
+  binomial('cloglog'))#
+m9 = glm(#
+  cbind(killed,alive)~dose,#
+  binomial('probit'))#
+m10 = glm(#
+  cbind(killed,alive)~dose,#
+  binomial('logit'))#
+m11 = glm(#
+  cbind(killed,alive)~logdose,#
+  binomial('probit'))#
+m12 = glm(#
+  cbind(killed,alive)~logdose,#
+  binomial('logit'))
+m1
+AIC(m1,m2)
+AIC(m1,m3)
+AIC(m1,m2,m3,m4,m5,m6,m7,m8,m9,m10.m11,m12)
+AIC(m1,m2,m3,m4,m5,m6,m7,m8,m9,m10,m11,m12)
+aicsModelName = paste("m",c(1:12),sep="")#
+aics = data.frame(#
+  aicsModelName,#
+  c(m1$aic,m2$aic,m3$aic,m4$aic,#
+	  m5$aic,m6$aic,m7$aic,m8$aic,#
+	  m9$aic,m10$aic,m11$aic,m12$aic),row.names=NULL)#
+colnames(aics) = c("model","AIC")#
+aics = aics[order(aics$AIC),]#
+for(i in 1:dim(aics)[1]){#
+  aics$diff[i] = aics$AIC[i]-aics$AIC[1]#
+}#
+aics$wi = exp(-0.5*aics$diff)#
+aics$aic.weights = aics$wi/sum(aics$wi)
+aics
+options(digits=3)
+options(digits=2)
+aics
+dose
+ml = lm(logdose~dose)#
+summary(ml)
+aicsModelName = paste("m",c(1,9,10),sep="")#
+aics = data.frame(#
+  aicsModelName,#
+  c(m1$aic,m9$aic,m10$aic),row.names=NULL)#
+colnames(aics) = c("model","AIC")#
+aics = aics[order(aics$AIC),]#
+for(i in 1:dim(aics)[1]){#
+  aics$diff[i] = aics$AIC[i]-aics$AIC[1]#
+}#
+aics$wi = exp(-0.5*aics$diff)#
+aics$aic.weights = aics$wi/sum(aics$wi)
+aics
+options(digits=3)
+options(digits=4)
+aics
+0.883/0.075
+0.215/0.0182
+0.2151/0.0182
+0.88282/0.07479
+# plot data range#
+plot(dose,killed/ntotal,#
+  xlab = "dose of CS2, mg/L",#
+  ylab = "Morality")#
+lines(dose,m1$fit, col = 1,lw = 2)#
+lines(dose,m9$fit, col = 2,lw = 2)#
+lines(dose,m10$fit,col = 3,lw = 2)#
+legend(#
+  "topleft",#
+  c("cloglog~dose","probit~dose","logit~dose"),#
+  pch = "-",#
+  col = 1:3)
+m1
+summary(m1)
+2^16
+300e6
+log(300e6,2)
+log(999999999,2)
+setwd("/Users/yunxu/workspace/projects/chromatin/script/data/ENm008")
+dir()
+a <- read.table("Nature_2010_ContactMap_ENm008_GM12878.txt")
+a
+contour(a)
+?contour
+filled.contour(a)
+a
+a[1,]
+edit(a)
+a[62,]
+a[63,]
+rownames(a)
+qqnorm(rnorm(100))
+qqnorm(rt(100,df=5))
+qqnorm(rgamma(100,2,2))
+qqnorm(rgamma(1000,2,2))
+qqnorm(rgamma(10000,2,2))
+qqnorm(rt(10000,df=5))

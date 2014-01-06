@@ -1,0 +1,2300 @@
+getSymbols("AAPL",src="google")
+barChart(AAPL)
+zoomChart("last 4 months")
+zoomChart("last 1 year")
+candleChart(AAPL)
+candleChart(AAPL,multi.col=TRUE)
+candleChart(AAPL,multi.col=TRUE,theme="white")
+reChart(AAPL)
+reChart(type="candles")
+reChart(type="candels")
+reChart(type="candles")
+barChart(AAPL)
+zoomChart(AAPL)
+reChart(type="candles")
+reChart(type="candles",show.grid=F)
+reChart(type="candles",show.grid=FALSE)
+reChart(type="candles",show.grid=FALSE,bar.type="o")
+reChart(type="candles",show.grid=FALSE,bar.type="o",theme="white")
+reChart(type="candles",show.grid=FALSE,bar.type="o",theme="white",multi.col=TRUE)
+?reChart
+getSymbols("YHOO")
+chartSeries(YHOO)
+chartSeries(YHOO,theme="white")
+chartSeries(YHOO, subset='last 4 months')
+chartSeries(YHOO, subset='last 4 months',theme="white")
+chartSeries(YHOO, subset='2007::2008-01')
+chartSeries(YHOO,theme=chartTheme('white'))
+chartSeries(YHOO,TA=NULL)   #no volume
+chartSeries(YHOO,TA=c(addVo(),addBBands()))  #add volume and Bollinger Bands from TTR
+addMACD()
+setTA()
+chartSeries(YHOO)   #draws chart again, this time will all indicators present
+zoomChart("last 3 months")
+zoomChart("last 6 months")
+zoomChart("last 8 months")
+addTA(EMA(Cl(SBUX)), on=1, col=6)
+addTA(EMA(Cl(YHOO)), on=1, col=6)
+addTA(OpCl(YHOO), col=4, type='b', lwd=2)
+newEMA <- newTA(EMA, Cl, on=1, col=7)
+newEMA()
+newEMA(on=NA, col=5)
+getSymbols("AAPL")
+addTA(EMA(Cl(AAPL)), on=1, col=10)
+addTA(EMA(Cl(AAPL)), on=1, col=5,lwd=3)
+getSymbols("XPT/USD",src="oanda")
+chartSeries(XPTUSD,name="Platinum (.oz) in $USD")
+chartSeries(to.weekly(XPTUSD),up.col='white',dn.col='blue')
+require(TTR)
+getSymbols("AAPL")
+chartSeries(AAPL)
+addMACD()
+addBBands()
+setSymbolLookup(SPY='yahoo', VXN=list(name='^VIX',src='yahoo'))
+mm <- specifyModel(Next(OpCl(SPY)) ~ OpCl(SPY) + Cl(VIX))
+modelData(mm)
+VIX
+?VIX
+getSymbols("IBM")
+chartSeries(IBM,theme="beige")
+reChart(theme="white",subset="2008")
+addTA(RSI(Cl(AAPL)), col=4)
+addTA(RSI(Cl(AAPL)) > 70, col=”#888888”, border=NA, on= -(1:3))
+addTA(RSI(Cl(AAPL)) > 70, col=”#888888”, border=NA, on=-(1:3))
+addTA(RSI(Cl(AAPL)) > 70, col=”#888888”)
+addTA(RSI(Cl(AAPL)) > 70, col="#888888", border=NA, on=-(1:3))
+chartSeries(AAPL)
+addTA(RSI(Cl(AAPL)) > 70, col="#888888", border=NA, on=-(1:3))
+zoomChart("last 3 months")
+zoomChart("last 6 months")
+RSI(Cl(AAPL))
+GMMA <- function(x) {#
+	fastMA	<- c(3,5,8,10,12,15) #
+	slowMA <- c(30,35,40,45,50,60) #
+	x <- sapply(c(fastMA,slowMA),function(xx) EMA(x,xx))#
+	return(x)#
+}
+addGuppy <- newTA(FUN=GMMA,#
+preFUN=Cl, col=c(rep(3,6),#
+rep(”#333333”,6)), legend=”GMMA”)
+addGuppy <- newTA(FUN=GMMA,#
+preFUN=Cl, col=c(rep(3,6),#
+rep("#333333",6)), legend=”GMMA”)
+addGuppy <- newTA(FUN=GMMA,#
+preFUN=Cl, col=c(rep(3,6),#
+rep("#333333",6)), legend="GMMA"")
+)
+))
+""
+addGuppy <- newTA(FUN=GMMA,#
+preFUN=Cl, col=c(rep(3,6),#
+rep("#333333",6)), legend="GMMA")
+candleChart(AAPL); addGuppy()
+example(getSymbols)
+setSymbolLookup(QQQQ=’yahoo’,SPY=’MySQL’)
+setSymbolLookup(QQQQ='yahoo',SPY='MySQL')
+getSymbols(c('QQQQ','SPY'))
+aa <- read.table(pipe("pbpaste"))
+plot(aa[])
+boxplot(aa)
+aa
+plot(1:nrow(aa),aa[,1])
+!/usr/bin/R#
+####################################################################
+# Get contact index according to segment (starting and end)#
+####################################################################
+#
+rm(list=ls())#
+#
+args <- commandArgs(trailingOnly = TRUE)#
+#
+if (Sys.info()["sysname"] == "Darwin"){#
+	SampleSize    = "p1500_d3300"#
+}else{#
+	SampleSize    = args[1]#
+}#
+CELL = "K562"#
+#------------------------------------------------------------------#
+# Parameter#
+#------------------------------------------------------------------#
+ReferenceCountFile = paste("data/analysis/ENm008/",SampleSize,".comb.c.txt",sep="")#
+cat(ReferenceCountFile, "\n") #
+DestDir = "tmp/"#
+#------------------------------------------------------------------#
+# Read reference data, and merge to experimental segment#
+#------------------------------------------------------------------#
+RF.Vec  = read.table(ReferenceCountFile)#
+Con.Vec = RF.Vec[,1:2]#
+#
+# # replace zero with minimal#
+# Contact.RF.Count.Vec = RF.Vec[,3:ncol(RF.Vec)]#
+# Contact.RF.Count.Vec =	apply(Contact.RF.Count.Vec,2,function(x)#
+# 			{ matchind = which(x==0)#
+# 				if(length(matchind)){x[matchind]= min(x[which(x!=0)])}#
+# 				return(x) })#
+# RF.Vec = cbind(Con.Vec, Contact.RF.Count.Vec)#
+# RF.Vec.Scale = cbind(Con.Vec, apply(Contact.RF.Count.Vec,2,function(x){x/sum(x)}))#
+#
+# #------------------------------------------------------------------#
+#
+ConformationConDir="../result/analysis/ENm008/chain/cut.all/par.1_1_1_1/GM12878.p1500_d3300"#
+RandomConDir="../result/analysis/ENm008/ensemble/cut.all"#
+# #
+# rm(list=ls())#
+# #
+# args <- commandArgs(trailingOnly = TRUE)#
+# # Par = "par.1_1_1_1"#
+# # SampleSize = "GM12878.p1500_d3300"#
+# # SampleSize = "K562.p1500_d3300"#
+# # #
+# # NumNodesofOneWindow = 1#
+# # MaxNum=1000#
+# #
+# Par = par.1_1_1_1#
+# SampleSize = args[2]#
+# NumNodesofOneWindow = 1#
+# MaxNum = 1000#
+# #
+# CELL = gsub("(\\w*).(\\w*)","\\1",SampleSize)#
+# DataDir = paste("../result/ENm008/chain/",Par,"/",SampleSize,sep="")#
+# OutDir = paste("/tmp/",DataDir,"/",sep="")#
+# #
+# FileNames = list.files(DataDir,pattern="*.pts",recursive=T,full.names=T)#
+# #FileNames = FileNames[1:5]#
+# #
+# LogWeight = rep(0,length(FileNames))#
+# for (i in 1:length(FileNames)){#
+# 	FileName = FileNames[i]#
+#   LogWeight[i] = read.table(FileName,comment.char="",nrows=1)[,3]#
+# }#
+# #
+# MaxLogWeight = max(LogWeight)#
+# Weight = exp(LogWeight - MaxLogWeight)#
+# NumCopies = round (Weight * MaxNum)#
+# #
+# NonZeroInd = which(NumCopies!=0)#
+# NumCopyVec = NumCopies[NonZeroInd]#
+# NewFileNames = FileNames[NonZeroInd]#
+# #
+# PtsSample = read.table(NewFileNames[1])#
+# NumNodes = nrow(PtsSample)#
+# PtsArr = array(0, dim=c(NumNodes,3, length(NewFileNames)))#
+# #
+# for ( i in 1:length(NewFileNames)){#
+# 	# cat(i,"\n")#
+# 	flush.console()#
+# 	FN = NewFileNames[i]#
+# 	PtsArr[,,i] = as.matrix(read.table(FN)[,1:3])#
+# }#
+# PtsArr = PtsArr / 10#
+# #
+# NumWindows = NumNodes - NumNodesofOneWindow + 1#
+# WinPtsArr = array(0, dim=c(NumWindows,3,length(NewFileNames)))#
+# for (i in 1:length(NewFileNames)){#
+# 	# TmpPtsMat = matrix(0,nrow=NumWindows,ncol=3)#
+# 	for ( j in 1:NumWindows){#
+# 		StartInd = j#
+# 		EndInd   = j + NumNodesofOneWindow - 1#
+# 		WinPtsArr[j,,i] = apply(PtsArr[StartInd:EndInd,,i,drop=F],2,mean)#
+# 	}#
+# }#
+# #
+# #
+# #
+# NumNodeNodeCon = sum(1:(NumWindows-1))#
+# NodeNodeVec = matrix(0,nrow=NumNodeNodeCon,ncol=2)#
+# DistArr     = array(0, dim=c(NumWindows,NumWindows,length(NewFileNames)))#
+# MeanMat   = matrix(NA,nrow=NumWindows,ncol=NumWindows)#
+# k           = 1#
+# for (i in 2:NumWindows){#
+# 	cat(i,"/",NumWindows,"\n")#
+# 	for (j in  1:(i-1)){#
+# 		flush.console()#
+# 		NodeNodeVec[k,] = c(j,i)#
+# 		DistArr[j,i,] = apply(WinPtsArr[c(j,i),,],3,dist)#
+# 		#
+# 		MeanMat[j,i] = mean(DistArr[j,i,])#
+# 		k = k + 1#
+# 	}#
+# }
+ConformationConDir
+!/usr/bin/R#
+####################################################################
+# Get contact index according to segment (starting and end)#
+####################################################################
+#
+rm(list=ls())#
+#
+args <- commandArgs(trailingOnly = TRUE)#
+#
+if (Sys.info()["sysname"] == "Darwin"){#
+	SampleSize    = "p1500_d3300"#
+}else{#
+	SampleSize    = args[1]#
+}#
+CELL = "K562"#
+#------------------------------------------------------------------#
+# Parameter#
+#------------------------------------------------------------------#
+ReferenceCountFile = paste("data/analysis/ENm008/",SampleSize,".comb.c.txt",sep="")#
+cat(ReferenceCountFile, "\n") #
+DestDir = "tmp/"#
+#------------------------------------------------------------------#
+# Read reference data, and merge to experimental segment#
+#------------------------------------------------------------------#
+RF.Vec  = read.table(ReferenceCountFile)#
+Con.Vec = RF.Vec[,1:2]#
+#
+# # replace zero with minimal#
+# Contact.RF.Count.Vec = RF.Vec[,3:ncol(RF.Vec)]#
+# Contact.RF.Count.Vec =	apply(Contact.RF.Count.Vec,2,function(x)#
+# 			{ matchind = which(x==0)#
+# 				if(length(matchind)){x[matchind]= min(x[which(x!=0)])}#
+# 				return(x) })#
+# RF.Vec = cbind(Con.Vec, Contact.RF.Count.Vec)#
+# RF.Vec.Scale = cbind(Con.Vec, apply(Contact.RF.Count.Vec,2,function(x){x/sum(x)}))#
+#
+# #------------------------------------------------------------------#
+#
+NewConDir="../result/analysis/ENm008/chain/cut.all/par.1_1_1_1/GM12878.p1500_d3300"#
+RndConDir="../result/analysis/ENm008/ensemble/cut.all"#
+# #
+# rm(list=ls())#
+# #
+# args <- commandArgs(trailingOnly = TRUE)#
+# # Par = "par.1_1_1_1"#
+# # SampleSize = "GM12878.p1500_d3300"#
+# # SampleSize = "K562.p1500_d3300"#
+# # #
+# # NumNodesofOneWindow = 1#
+# # MaxNum=1000#
+# #
+# Par = par.1_1_1_1#
+# SampleSize = args[2]#
+# NumNodesofOneWindow = 1#
+# MaxNum = 1000#
+# #
+# CELL = gsub("(\\w*).(\\w*)","\\1",SampleSize)#
+# DataDir = paste("../result/ENm008/chain/",Par,"/",SampleSize,sep="")#
+# OutDir = paste("/tmp/",DataDir,"/",sep="")#
+# #
+# FileNames = list.files(DataDir,pattern="*.pts",recursive=T,full.names=T)#
+# #FileNames = FileNames[1:5]#
+# #
+# LogWeight = rep(0,length(FileNames))#
+# for (i in 1:length(FileNames)){#
+# 	FileName = FileNames[i]#
+#   LogWeight[i] = read.table(FileName,comment.char="",nrows=1)[,3]#
+# }#
+# #
+# MaxLogWeight = max(LogWeight)#
+# Weight = exp(LogWeight - MaxLogWeight)#
+# NumCopies = round (Weight * MaxNum)#
+# #
+# NonZeroInd = which(NumCopies!=0)#
+# NumCopyVec = NumCopies[NonZeroInd]#
+# NewFileNames = FileNames[NonZeroInd]#
+# #
+# PtsSample = read.table(NewFileNames[1])#
+# NumNodes = nrow(PtsSample)#
+# PtsArr = array(0, dim=c(NumNodes,3, length(NewFileNames)))#
+# #
+# for ( i in 1:length(NewFileNames)){#
+# 	# cat(i,"\n")#
+# 	flush.console()#
+# 	FN = NewFileNames[i]#
+# 	PtsArr[,,i] = as.matrix(read.table(FN)[,1:3])#
+# }#
+# PtsArr = PtsArr / 10#
+# #
+# NumWindows = NumNodes - NumNodesofOneWindow + 1#
+# WinPtsArr = array(0, dim=c(NumWindows,3,length(NewFileNames)))#
+# for (i in 1:length(NewFileNames)){#
+# 	# TmpPtsMat = matrix(0,nrow=NumWindows,ncol=3)#
+# 	for ( j in 1:NumWindows){#
+# 		StartInd = j#
+# 		EndInd   = j + NumNodesofOneWindow - 1#
+# 		WinPtsArr[j,,i] = apply(PtsArr[StartInd:EndInd,,i,drop=F],2,mean)#
+# 	}#
+# }#
+# #
+# #
+# #
+# NumNodeNodeCon = sum(1:(NumWindows-1))#
+# NodeNodeVec = matrix(0,nrow=NumNodeNodeCon,ncol=2)#
+# DistArr     = array(0, dim=c(NumWindows,NumWindows,length(NewFileNames)))#
+# MeanMat   = matrix(NA,nrow=NumWindows,ncol=NumWindows)#
+# k           = 1#
+# for (i in 2:NumWindows){#
+# 	cat(i,"/",NumWindows,"\n")#
+# 	for (j in  1:(i-1)){#
+# 		flush.console()#
+# 		NodeNodeVec[k,] = c(j,i)#
+# 		DistArr[j,i,] = apply(WinPtsArr[c(j,i),,],3,dist)#
+# 		#
+# 		MeanMat[j,i] = mean(DistArr[j,i,])#
+# 		k = k + 1#
+# 	}#
+# }
+NewConFiles=list.files(path=NewConDir,pattern=".con")
+NewConFiles
+NewConDir="../result/analysis/ENm008/chain/cut.all/par.1_1_1_1/GM12878.p1500_d3300"
+NewConFiles
+NewConFiles=list.files(path=NewConDir,pattern=".con")
+NewConFiles
+NewConDir
+list.files(NewConDir)
+list.files()
+getwd()
+q()
+venn.diagram( x = list( A = c(1:10), B = c(11:90), C = c(81:90) ),sp.cases = TRUE, filename = "2-9_triple_special_case-121AO.tiff", cex = 2.5, cat.cex = 2.5, cat.pos = 0, cat.dist = c(0.04, 0.04, 0.02), reverse = TRUE );
+library(VennDiagram)
+venn.diagram( x = list( A = c(1:10), B = c(11:90), C = c(81:90) ),sp.cases = TRUE, filename = "2-9_triple_special_case-121AO.tiff", cex = 2.5, cat.cex = 2.5, cat.pos = 0, cat.dist = c(0.04, 0.04, 0.02), reverse = TRUE );
+venn.diagram(list(A = 1:150, B = 121:170), "Venn_2set_simple.tiff");
+getwd()
+ls()
+dir()
+getwd()
+venn.plot <- draw.pairwise.venn(100, 70, 30, c("First", "Second"), scaled = FALSE);
+venn.plot <- draw.pairwise.venn( area1 = 100, area2 = 70,cross.area = 68, category = c("First", "Second"), fill = c("blue", "red"), lty = "blank", cex = 2, cat.cex = 2, cat.pos = c(285, 105), cat.dist = 0.09, cat.just = list(c(-1, -1), c(1, 1)), ext.pos = 30, ext.dist = -0.05, ext.length = 0.85, ext.line.lwd = 2, ext.line.lty = "dashed" );
+venn.plot <- draw.pairwise.venn( area1 = 100, area2 = 70,cross.area = 0, category = c("First", "Second"), cat.pos = c(0, 180), euler.d = TRUE, sep.dist = 0.03, rotation.degree = 45 );
+venn.plot <- draw.quad.venn( area1 = 72, area2 = 86,area3 = 50, area4 = 52, n12 = 44, n13 = 27, n14 = 32, n23 = 38, n24 = 32, n34 = 20, n123 = 18, n124 = 17, n134 = 11, n234 = 13,n1234 = 6, category = c("First", "Second", "Third", "Fourth"), fill = c("orange", "red", "green", "blue"), lty = "dashed", cex = 2, cat.cex = 2, cat.col = c("orange", "red", "green", "blue") );
+venn.plot <- draw.single.venn(100, "First");
+dev.off()
+venn.plot <- draw.single.venn(100, "First");
+venn.plot <- draw.single.venn( area = 365, category = "All\nDays",lwd = 5, lty = "blank", cex = 3, label.col = "orange", cat.cex = 4, cat.pos = 180, cat.dist = -0.20, cat.col = "white", fill = "red", alpha = 0.15 );
+venn.plot <- draw.pairwise.venn( area1 = 100, area2 = 70,cross.area = 68, category = c("First", "Second"), fill = c("blue", "red"), lty = "blank", cex = 2, cat.cex = 2, cat.pos = c(285, 105), cat.dist = 0.09, cat.just = list(c(-1, -1), c(1, 1)), ext.pos = 30, ext.dist = -0.05, ext.length = 0.85, ext.line.lwd = 2, ext.line.lty = "dashed" );
+dev.off()
+venn.plot <- draw.pairwise.venn( area1 = 100, area2 = 70,cross.area = 68, category = c("First", "Second"), fill = c("blue", "red"), lty = "blank", cex = 2, cat.cex = 2, cat.pos = c(285, 105), cat.dist = 0.09, cat.just = list(c(-1, -1), c(1, 1)), ext.pos = 30, ext.dist = -0.05, ext.length = 0.85, ext.line.lwd = 2, ext.line.lty = "dashed" );
+venn.plot <- draw.pairwise.venn( area1 = 100, area2 = 70,cross.area = 68, category = c("First", "Second"), fill = c("blue", "red"), lty = "blank", cex = 2, cat.cex = 2, cat.pos = c(285, 105), cat.dist = 0.09, cat.just = list(c(-1, -1), c(1, 1)), ext.pos = 30, ext.dist = -0.05, ext.length = 0.85, ext.line.lwd = 2, ext.line.lty = "dashed" ,alpha=rep(0.5,2));
+dev.off()
+venn.plot <- draw.pairwise.venn( area1 = 100, area2 = 70,cross.area = 68, category = c("First", "Second"), fill = c("blue", "red"), lty = "blank", cex = 2, cat.cex = 2, cat.pos = c(285, 105), cat.dist = 0.09, cat.just = list(c(-1, -1), c(1, 1)), ext.pos = 30, ext.dist = -0.05, ext.length = 0.85, ext.line.lwd = 2, ext.line.lty = "dashed" ,alpha=rep(0.5,2));
+dev.off()
+venn.plot <- draw.pairwise.venn( area1 = 100, area2 = 70,cross.area = 68, category = c("First", "Second"), fill = c("blue", "red"), lty = "blank", cex = 2, cat.cex = 2, cat.pos = c(285, 105), cat.dist = 0.09, cat.just = list(c(-1, -1), c(1, 1)), ext.pos = 30, ext.dist = -0.05, ext.length = 0.85, ext.line.lwd = 2, ext.line.lty = "dashed" ,alpha=rep(0.2,2));
+venn.plot <- draw.pairwise.venn( area1 = 100, area2 = 70,cross.area = 68, category = c("First", "Second"), fill = c("blue", "red"), lty = "blank", cex = 2, cat.cex = 2, cat.pos = c(285, 105), cat.dist = 0.09, cat.just = list(c(-1, -1), c(1, 1)), ext.pos = 30, ext.dist = -0.05, ext.length = 0.85, ext.line.lwd = 2, ext.line.lty = "dashed" ,alpha=rep(0.8,2));
+venn.plot <- draw.pairwise.venn( area1 = 100, area2 = 70,cross.area = 68, category = c("First", "Second"), fill = c("blue", "red"), lty = "blank", cex = 2, cat.cex = 2, cat.pos = c(285, 105), cat.dist = 0.09, cat.just = list(c(-1, -1), c(1, 1)), ext.pos = 30, ext.dist = -0.05, ext.length = 0.85, ext.line.lwd = 2, ext.line.lty = "dashed" ,alpha=c(0.1,.8));
+venn.plot <- draw.pairwise.venn( area1 = 100, area2 = 70,cross.area = 28, category = c("First", "Second"), fill = c("blue", "red"), lty = "blank", cex = 2, cat.cex = 2, cat.pos = c(285, 105), cat.dist = 0.09, cat.just = list(c(-1, -1), c(1, 1)), ext.pos = 30, ext.dist = -0.05, ext.length = 0.85, ext.line.lwd = 2, ext.line.lty = "dashed" ,alpha=c(0.1,.8));
+venn.plot <- draw.pairwise.venn( area1 = 100, area2 = 70,cross.area = 28, category = c("First", "Second"), fill = c("blue", "red"), lty = "blank", cex = 2, cat.cex = 2, cat.pos = c(285, 105), cat.dist = 0.09, cat.just = list(c(-1, -1), c(1, 1)), ext.pos = 30, ext.dist = -0.05, ext.length = 0.85, ext.line.lwd = 2, ext.line.lty = "dashed" );
+venn.plot <- draw.pairwise.venn( area1 = 117, area2 = 419,cross.area = 107, category = c("First", "Second"), fill = c("blue", "red"), lty = "blank", cex = 2, cat.cex = 2, cat.pos = c(285, 105), cat.dist = 0.09, cat.just = list(c(-1, -1), c(1, 1)), ext.pos = 30, ext.dist = -0.05, ext.length = 0.85, ext.line.lwd = 2, ext.line.lty = "dashed" );
+dev.off()
+venn.plot <- draw.pairwise.venn( area1 = 117, area2 = 419,cross.area = 107, category = c("First", "Second"), fill = c("blue", "red"), lty = "blank", cex = 2, cat.cex = 2, cat.pos = c(105, 105), cat.dist = 0.09, cat.just = list(c(-1, -1), c(1, 1)), ext.pos = 30, ext.dist = -0.05, ext.length = 0.85, ext.line.lwd = 2, ext.line.lty = "dashed" );
+dev.off()
+venn.plot <- draw.pairwise.venn( area1 = 117, area2 = 419,cross.area = 107, category = c("First", "Second"), fill = c("blue", "red"), lty = "blank", cex = 2, cat.cex = 2, cat.pos = c(285, 105), cat.dist = 0.09, ext.pos = 30, ext.dist = -0.05, ext.length = 0.85, ext.line.lwd = 2, ext.line.lty = "dashed" );
+q()
+setwd('/Users/yunxu/workspace/projects/chromatin/script')
+!/usr/bin/R#
+rm(list=ls())#
+#------------------------------------------------------------------#
+library(grid)#
+library(lattice)#
+library(RColorBrewer)#
+#------------------------------------------------------------------#
+#
+if (Sys.info()["sysname"] == "Darwin"){#
+	CELL = "K562"#
+	CELL = "GM12878"#
+}else{#
+	CELL = args[1]#
+}#
+#
+#------------------------------------------------------------------#
+# NumMax = 1000#
+Type="r270.ovl"#
+ConDir=paste("/Users/yunxu/workspace/projects/chromatin/result/analysis/ENm008/chain/alpha/par.1_1_1_1/",CELL,".p1500_d3300",sep="")#
+#------------------------------------------------------------------#
+GetWeightFile <- function(ConDir){#
+	ConFiles   = list.files(path=ConDir,pattern=Type,full.names=T)#
+	NumFiles = length(ConFiles)#
+	# NumFiles = 10#
+	Weight = rep(0,NumFiles)#
+	ConList = list()#
+	for (i in 1:NumFiles){#
+		Weight[i] = read.table(ConFiles[i],comment.char="",nrows=1)[,3]#
+		ConList[[i]] = read.table(ConFiles[i])#
+	}#
+	return(list("weight"=Weight,"conlist"=ConList))#
+}#
+#------------------------------------------------------------------#
+SegLenFN="data/analysis/ENm008/ENm008.p1500.equ.seg.len.txt"#
+NumNodes=nrow(read.table(SegLenFN))+1#
+#------------------------------------------------------------------#
+#
+WeightData <- GetWeightFile(ConDir)#
+Weight <- WeightData$weight#
+ConList <- WeightData$conlist#
+NumFiles <- length(Weight)#
+#------------------------------------------------------------------#
+NewPIJMat = matrix(NA,nrow=NumNodes,ncol=NumNodes)#
+for (i in 1:(NumNodes-2)){#
+	for (j in (i+2):NumNodes){#
+		cat(i, " / ",j ," / ", NumNodes,"\n"); flush.console();#
+		ConIJ = unlist(lapply(ConList,function(x){length(which(x[,1]==i & x[,2]==j))}))#
+		NewPIJMat[i,j] = sum(ConIJ * Weight) / sum(Weight)#
+	}#
+}#
+#------------------------------------------------------------------#
+scaleMatrix <- function(mat, min_m, max_m){#
+	m <- (mat - min_m) / (max_m - min_m)#
+	return(m)#
+}#
+#------------------------------------------------------------------#
+Scale2Dist <- function(c) {sprintf("%.1f",MAX_M *c/max(c))}#
+#------------------------------------------------------------------#
+#
+axis.legend <- function(side, ...) {#
+	ylim <- current.panel.limits()$ylim#
+	switch(side,#
+	  left = {#
+			prettyY <- pretty(ylim)#
+			labY <- prettyY#
+			panel.axis(side = side, outside = TRUE,#
+			           at = prettyY, labels = labY,#
+								draw.labels =F,ticks=F)#
+	  },#
+	  right = {#
+			prettyY <- pretty(ylim)#
+			# seqY <- seq(1,max(prettyY))#
+			seqY <- prettyY#
+			labY <- Scale2Dist(seqY)#
+			panel.axis(side = side, outside = T,#
+			           at = seqY,#
+									# line.col = "black",#
+								 labels = labY,#
+								text.cex = 0.5#
+							)#
+	  },#
+	  axis.default(side = side, ...))#
+}#
+#
+#------------------------------------------------------------------#
+#
+DrawTriangleHeatmap <- function(FN,Mat,MIN_M, MAX_M, Palette,type){#
+#
+	# pdf(FN)	#
+	# M = NewPIJMat#
+	# MIN_M = MIN_Dist#
+	# MAX_M = MAX_Dist#
+	# Palette = myPalette#
+	M = scaleMatrix(Mat,MIN_M, MAX_M)#
+	M[which(lower.tri(M))] = NA#
+	# trellis.par.set(axis.line=list(lwd=0,col="white"))#
+	HeatMapPlot <- levelplot(#
+		M,#
+		at = do.breaks(range(0,1),length(Palette)),#
+		col.regions=colorRampPalette(Palette, space = "Lab"),#
+		colorkey= F,#
+		xlab = "", #
+		ylab="",#
+		scales = list(draw = FALSE),#
+		par.settings = list(axis.line=list(lwd=0,col="white")),#
+		panel = function(...){#
+		    panel.levelplot(...)#
+				for (i in 1:nrow(M)){#
+					panel.text(i+0.25,i-0.5,i,cex=.5,srt=90)#
+				}#
+				# panel.text(nrow(M)/2+3,nrow(M)/2-3,paste("Window size =",NumNodesofOneWindow),cex=1,srt=45)#
+				panel.text(nrow(M)/2+5,nrow(M)/2-5,type,cex=1,srt=45)#
+				panel.text(nrow(M)/2+7,nrow(M)/2-7,CELL,cex=1,srt=45)#
+#
+				step = 5#
+				lineX = seq(step,nrow(M),by=step)#
+				for (i in 1:length(lineX)){#
+					panel.lines(#
+						x=c(lineX[i],lineX[i]),#
+						y=c(lineX[i],nrow(M)),#
+						col=grey(0.9),lwd=0.5)#
+					panel.lines(#
+						x=c(1,lineX[i]),#
+						y=c(lineX[i],lineX[i]),#
+						col=grey(0.9),lwd=0.5)#
+				}#
+		}#
+	)#
+	# trellis.par.set(axis.line=list(lwd=1))#
+	LegendPlot <- levelplot(#
+		t(as.matrix(do.breaks(range(MIN_M,MAX_M),length(Palette)-1))),#
+		col.regions=colorRampPalette(Palette, space = "Lab"),#
+		colorkey=F,#
+		xlab = "", ylab="",#
+		scales = list(#
+			x = list(draw=F)),#
+			par.settings = list(axis.line=list(lwd=.25,col="black")),#
+		axis = axis.legend,#
+	)#
+	all.layout = grid.layout(3,3,#
+	  widths = unit(c(6,1,5), c("lines","null","lines")), #
+	  heights = unit(c(6,1,5), c("lines", "null", "lines")))#
+#
+	top.vp <- viewport(layout = all.layout)#
+#
+	margin1.vp <- viewport(layout.pos.col = 2, layout.pos.row = 3, name = "margin1")#
+	margin2.vp <- viewport(layout.pos.col = 1, layout.pos.row = 2, name = "margin2")#
+	margin3.vp <- viewport(layout.pos.col = 2, layout.pos.row = 1, name = "margin3")#
+	margin4.vp <- viewport(layout.pos.col = 3, layout.pos.row = 2, name = "margin4")#
+	plot.vp <- viewport(layout.pos.col = 2, layout.pos.row = 2, name = "plot")#
+#
+	heatmap.vp <- viewport(angle = -45, name="heatmap")#
+	legend.vp <- viewport(	x = unit(2.5,"lines"),	y = unit(0.7,"npc"),#
+		width = unit(.25,"lines"),#
+		height = unit(8,"lines"),#
+		name = "legend"#
+		)#
+	n <- nrow(M) #
+#
+	label.vp <- viewport(name="label",width=sqrt(2)*(n-1)/n ,#
+	 height=unit(1,"lines"))#
+	plot.vptree <- vpTree(plot.vp,vpList(heatmap.vp,label.vp))#
+	# top.vptree <- vpTree(top.vp, vpList(margin1.vp, margin2.vp, margin3.vp, margin4.vp, plot.vptree))#
+	top.vptree <- vpTree(top.vp,#
+		vpList(margin1.vp,margin2.vp,margin3.vp,margin4.vp,plot.vptree))#
+#
+	grid.newpage()#
+	# grid.show.layout(all.layout)#
+	pushViewport(top.vptree)#
+	seekViewport("heatmap")#
+	# seekViewport("plot")#
+		 ow <- options("warn")#
+		 options(warn = -1)#
+		trellis.par.set(axis.line=list(lwd=0))#
+		print(HeatMapPlot,vp=heatmap.vp,newpage=FALSE)#
+		 options(ow)#
+	  # grid.raster(t(convertToColors(M,MIN_M,MAX_M,Palette)), interpolate = F)#
+	upViewport()#
+#
+	seekViewport("margin4")#
+	  # grid.rect(gp = gpar(col = "gray90"))#
+		pushViewport( legend.vp )#
+		trellis.par.set(axis.line=list(lwd=1))#
+		print(LegendPlot,newpage=FALSE)#
+			# seekViewport("legend")		#
+	upViewport(0)#
+	# dev.off()#
+}#
+#------------------------------------------------------------------#
+OutDir = "tmp"#
+#------------------------------------------------------------------#
+#
+MIN_M = 0#
+MAX_M = 1#
+# myPalette <- brewer.pal(11, "Spectral")#
+myPalette <- brewer.pal(9,"YlGnBu")#
+# FN = paste(OutDir,"/","w_",NumNodesofOneWindow,"_mean.pdf",sep="")#
+FN = paste(OutDir,"/",CELL,".p1500_d3300.c840.pij.all.pdf",sep="")#
+cat(FN,"\n")#
+DrawTriangleHeatmap(FN,NewPIJMat,MIN_M,MAX_M,myPalette,"All")#
+#------------------------------------------------------------------#
+# alpha shape#
+OverlapFN.Common = paste("tmp/",CELL,".p1500_d3300.c840.common.a1.",Type,".txt",sep="")#
+OverlapFN.New = paste("tmp/",CELL,".p1500_d3300.c840.new.a1.",Type,".txt",sep="")#
+Overlap.Con.Common = read.table(OverlapFN.Common)#
+Overlap.Con.New = read.table(OverlapFN.New)#
+Overlap.Con.All = rbind(Overlap.Con.Common, Overlap.Con.New)#
+#------------------------------------------------------------------#
+GetSignificantMat <- function(mat, sig){#
+	# mat = newmat#
+	# sig = Overlap.Con.All#
+	for (i in 1:(NumNodes-2)){#
+		for (j in (i+2):NumNodes){#
+			if (length( which(sig[,1]==i & sig[,2]==j )   )==0){#
+				mat[i,j] = NA#
+			}#
+		}#
+	}#
+	return(mat)#
+}#
+# dev.new()#
+FN = paste(OutDir,"/",CELL,".p1500_d3300.c840.",Type,".pij.allsig.pdf",sep="")#
+cat(FN,"\n")#
+sig.mat.all = GetSignificantMat(NewPIJMat,Overlap.Con.All)#
+DrawTriangleHeatmap(FN,sig.mat.all,MIN_M,MAX_M,myPalette,"All significant")#
+# dev.new()#
+FN = paste(OutDir,"/",CELL,".p1500_d3300.c840.",Type,".pij.newsig.pdf",sep="")#
+cat(FN,"\n")#
+sig.mat.new = GetSignificantMat(NewPIJMat,Overlap.Con.New)#
+DrawTriangleHeatmap(FN,sig.mat.new,MIN_M,MAX_M,myPalette,"New significant")#
+# dev.new()#
+FN = paste(OutDir,"/",CELL,".p1500_d3300.c840.",Type,".pij.commonsig.pdf",sep="")#
+cat(FN,"\n")#
+sig.mat.common = GetSignificantMat(NewPIJMat,Overlap.Con.Common)#
+DrawTriangleHeatmap(FN,sig.mat.common,MIN_M,MAX_M,myPalette,"Common significant")#
+#------------------------------------------------------------------#
+StripedDiagMatrix <- function(mat,away_s,away_e){#
+	# mat is a upper triangle matrix#
+	# mat = sig.mat.all#
+	# away_s = 10#
+	# away_e = 54#
+	NumElement = nrow(mat)#
+	set_full = seq(1,NumElement)#
+	# print(away_s)#
+#
+	for (i in 1:NumElement){#
+		set_need = intersect(set_full, i + seq(away_s,away_e))#
+		set_ignore = setdiff(set_full, set_need)#
+		mat[i,set_ignore] = NA#
+	}#
+	tmat = t(mat)#
+	mat[which(lower.tri(mat))] = tmat[which(lower.tri(tmat))]#
+	return(mat)#
+}#
+#------------------------------------------------------------------#
+graphics.off()#
+#------------------------------------------------------------------#
+away_s = 1#
+away_e = NumNodes#
+sig.mat.sel_all = StripedDiagMatrix(sig.mat.all,away_s,away_e)#
+DrawTriangleHeatmap(FN,sig.mat.sel_all,MIN_M,MAX_M,myPalette,paste("Range", away_s,"-",away_e, "significant"))#
+CI_all = rowSums(sig.mat.sel_all,na.rm=T)#
+#------------------------------------------------------------------#
+away_s = 1#
+away_e = 10#
+sig.mat.sel_close = StripedDiagMatrix(sig.mat.all,away_s,away_e)#
+DrawTriangleHeatmap(FN,sig.mat.sel_close,MIN_M,MAX_M,myPalette,paste("Range", away_s,"-",away_e, "significant"))#
+CI_close = rowSums(sig.mat.sel_close,na.rm=T)#
+#------------------------------------------------------------------#
+away_s = 11#
+away_e = NumNodes#
+sig.mat.sel_far = StripedDiagMatrix(sig.mat.all,away_s,away_e)#
+DrawTriangleHeatmap(FN,sig.mat.sel_far,MIN_M,MAX_M,myPalette,paste("Range", away_s,"-",away_e, "significant"))#
+CI_far = rowSums(sig.mat.sel_far,na.rm=T)#
+#------------------------------------------------------------------#
+df <- data.frame(#
+	NodeIndex=1:NumNodes,#
+	ContactIndex_all = rowSums(sig.mat.sel_all,na.rm=T),#
+	ContactIndex_close = rowSums(sig.mat.sel_close,na.rm=T),#
+	ContactIndex_far = rowSums(sig.mat.sel_far,na.rm=T))#
+df_long <- melt(df,id="NodeIndex")#
+#
+p <- ggplot(data=df_long,aes(x=NodeIndex,y=value,color=variable)) #
+p + facet_grid(variable ~.) + theme_bw() +#
+	geom_line() + geom_point() +#
+	theme(legend.position = "none") +#
+	labs(y = "Contact Index") +#
+	scale_colour_brewer(palette="Set1") +#
+	scale_x_continuous(breaks=seq(5,NumNodes,by=5))#
+p + facet_grid(. ~ variable) + theme_bw() +#
+		geom_line() + geom_point() +#
+		theme(legend.position = "none") +#
+		labs(y = "Contact Index") +#
+		scale_colour_brewer(palette="Set1") +#
+		scale_x_continuous(breaks=seq(5,NumNodes,by=5))#
+#
+#------------------------------------------------------------------#
+#------------------------------------------------------------------
+library(reshape)
+library(ggplot)
+library(ggplot2)
+df <- data.frame(#
+	NodeIndex=1:NumNodes,#
+	ContactIndex_all = rowSums(sig.mat.sel_all,na.rm=T),#
+	ContactIndex_close = rowSums(sig.mat.sel_close,na.rm=T),#
+	ContactIndex_far = rowSums(sig.mat.sel_far,na.rm=T))#
+df_long <- melt(df,id="NodeIndex")
+p <- ggplot(data=df_long,aes(x=NodeIndex,y=value,color=variable)) #
+p + facet_grid(variable ~.) + theme_bw() +#
+	geom_line() + geom_point() +#
+	theme(legend.position = "none") +#
+	labs(y = "Contact Index") +#
+	scale_colour_brewer(palette="Set1") +#
+	scale_x_continuous(breaks=seq(5,NumNodes,by=5))
+dev.new()
+p + facet_grid(. ~ variable) + theme_bw() +#
+		geom_line() + geom_point() +#
+		theme(legend.position = "none") +#
+		labs(y = "Contact Index") +#
+		scale_colour_brewer(palette="Set1") +#
+		scale_x_continuous(breaks=seq(5,NumNodes,by=5))
+FN <- paste(OutDir,"/",CELL,".p1500_d3300.c840.",Type,".pij.all.",away_s,"-",away_e,"pdf",sep="")
+FN
+FN <- paste(OutDir,"/",CELL,".p1500_d3300.c840.",Type,".pij.all.",away_s,"-",away_e,".pdf",sep="")
+FN
+away_s = 1#
+away_e = NumNodes#
+sig.mat.sel_all = StripedDiagMatrix(sig.mat.all,away_s,away_e)#
+(FN <- paste(OutDir,"/",CELL,".p1500_d3300.c840.",Type,".pij.all.",away_s,"-",away_e,".pdf",sep=""))#
+DrawTriangleHeatmap(FN,sig.mat.sel_all,MIN_M,MAX_M,myPalette,paste("Range", away_s,"-",away_e, "significant"))#
+CI_all = rowSums(sig.mat.sel_all,na.rm=T)
+away_s = 1#
+away_e = NumNodes#
+sig.mat.sel_all = StripedDiagMatrix(sig.mat.all,away_s,away_e)#
+(FN <- paste(OutDir,"/",CELL,".p1500_d3300.c840.",Type,".pij.all.",away_s,"-",away_e,".pdf",sep=""))#
+DrawTriangleHeatmap(FN,sig.mat.sel_all,MIN_M,MAX_M,myPalette,paste("Range", away_s,"-",away_e, "significant"))#
+CI_all = rowSums(sig.mat.sel_all,na.rm=T)
+(FN <- paste(OutDir,"/",CELL,".p1500_d3300.c840.",Type,".pij.all.ConotactIndex.portrait.pdf",sep=""))
+(FN <- paste(OutDir,"/",CELL,".p1500_d3300.c840.",Type,".pij.all.contactindex.portrait.pdf",sep=""))
+(FN <- paste(OutDir,"/",CELL,".p1500_d3300.c840.",Type,".pij.all.contactindex.vertical.pdf",sep=""))#
+p <- ggplot(data=df_long,aes(x=NodeIndex,y=value,color=variable)) #
+p + facet_grid(variable ~.) + theme_bw() +#
+	geom_line() + geom_point() +#
+	theme(legend.position = "none") +#
+	labs(y = "Contact Index") +#
+	scale_colour_brewer(palette="Set1") +#
+	scale_x_continuous(breaks=seq(5,NumNodes,by=5))
+par(width=3,height=4)
+par(pin=c(0.5, 0.3))
+par(pin=c(1.5, 0.3))
+dev.new(width=3,height=5)
+(FN <- paste(OutDir,"/",CELL,".p1500_d3300.c840.",Type,".pij.all.contactindex.vertical.pdf",sep=""))#
+p <- ggplot(data=df_long,aes(x=NodeIndex,y=value,color=variable)) #
+p + facet_grid(variable ~.) + theme_bw() +#
+	geom_line() + geom_point() +#
+	theme(legend.position = "none") +#
+	labs(y = "Contact Index") +#
+	scale_colour_brewer(palette="Set1") +#
+	scale_x_continuous(breaks=seq(5,NumNodes,by=5))
+dev.new(width=6,height=10)
+(FN <- paste(OutDir,"/",CELL,".p1500_d3300.c840.",Type,".pij.all.contactindex.vertical.pdf",sep=""))#
+p <- ggplot(data=df_long,aes(x=NodeIndex,y=value,color=variable)) #
+p + facet_grid(variable ~.) + theme_bw() +#
+	geom_line() + geom_point() +#
+	theme(legend.position = "none") +#
+	labs(y = "Contact Index") +#
+	scale_colour_brewer(palette="Set1") +#
+	scale_x_continuous(breaks=seq(5,NumNodes,by=5))
+dev.new(width=3,height=5)
+dev.off()
+p <- ggplot(data=df_long,aes(x=NodeIndex,y=value,color=variable)) +#
+	theme_bw() +#
+	geom_line() + geom_point() +#
+	theme(legend.position = "none") +#
+	labs(y = "Contact Index") +#
+	scale_colour_brewer(palette="Set1") +#
+	scale_x_continuous(breaks=seq(5,NumNodes,by=5))#
+#
+(FN <- paste(OutDir,"/",CELL,".p1500_d3300.c840.",Type,".pij.all.contactindex.vertical.pdf",sep=""))#
+pdf(file=FN,width=3, height=5)#
+p + facet_grid(variable ~.) #
+dev.off()
+(FN <- paste(OutDir,"/",CELL,".p1500_d3300.c840.",Type,".pij.all.contactindex.horizon.pdf",sep=""))#
+pdf(file=FN,width=10, height=3)#
+p + facet_grid(. ~ variable) #
+dev.off()
+(FN <- paste(OutDir,"/",CELL,".p1500_d3300.c840.",Type,".pij.all.contactindex.horizon.pdf",sep=""))#
+pdf(file=FN,width=10, height=2)#
+p + facet_grid(. ~ variable) #
+dev.off()
+df
+write.table(df,quote=F,row.names=F)
+sprintf("%.3f",df[,1])
+sprintf("%.3f",df[,2])
+sprintf("%.3f",df)
+sprintf("%.3f",df[,2])
+apply(df,1,function(x){sprintf("%g\t%.3f",x[1],x[2])})
+apply(df,1,function(x){sprintf("%g\t%.3f\t%.3f\t%.3f",x[1],x[2],x[3],x[4])})
+write.table(apply(df,1,function(x){sprintf("%g\t%.3f\t%.3f\t%.3f",x[1],x[2],x[3],x[4])}),quote=F,row.names=F)
+write.table(#
+	apply(df,1,function(x){sprintf("%g\t%.3f\t%.3f\t%.3f",x[1],x[2],x[3],x[4])}),#
+	quote=F,row.names=F,col.names=F)
+col.names(df)
+colnames(df)
+write.table(df)
+write.table(colnames(df))
+write.table( paset(colnames(df),collapse="\t") )
+write.table( paste(colnames(df),collapse="\t") )
+write.table( paste("#",paste(colnames(df),collapse="\t")), #
+	quote=F,row.names=F,col.names=F)
+write.table( paste("#",paste(colnames(df),collapse="\t")), #
+	quote=F,row.names=F,col.names=F)
+write.table( paste("#",paste(colnames(df),collapse="\t")), #
+	quote=F,row.names=F,col.names=F)
+write.table( file=FN,#
+	paste("#",paste(colnames(df),collapse="\t")), #
+	quote=F,row.names=F,col.names=F)#
+write.table( file =FN,#
+	apply(df,1,function(x){sprintf("%g\t%.3f\t%.3f\t%.3f",x[1],x[2],x[3],x[4])}),#
+	quote=F,row.names=F,col.names=F,append=T)
+(FN <- paste(OutDir,"/",CELL,".p1500_d3300.c840.",Type,".pij.all.contactindex.txt",sep=""))#
+write.table( file=FN,#
+	paste("#",paste(colnames(df),collapse="\t")), #
+	quote=F,row.names=F,col.names=F)#
+write.table( file =FN,#
+	apply(df,1,function(x){sprintf("%g\t%.3f\t%.3f\t%.3f",x[1],x[2],x[3],x[4])}),#
+	quote=F,row.names=F,col.names=F,append=T)
+!/usr/bin/R#
+rm(list=ls())#
+#------------------------------------------------------------------#
+library(grid)#
+library(lattice)#
+library(RColorBrewer)#
+library(reshape)#
+library(ggplot2)#
+#------------------------------------------------------------------#
+#
+if (Sys.info()["sysname"] == "Darwin"){#
+	CELL = "K562"#
+	CELL = "GM12878"#
+}else{#
+	CELL = args[1]#
+}#
+#
+#------------------------------------------------------------------#
+# NumMax = 1000#
+Type="r270.ovl"#
+method="alpha"#
+#------------------------------------------------------------------#
+Type=".con"#
+method = "cut.all"#
+#------------------------------------------------------------------#
+ConDir=paste("/Users/yunxu/workspace/projects/chromatin/result/analysis/ENm008/chain/",method,"/par.1_1_1_1/",CELL,".#
+p1500_d3300",sep="")#
+ConDir=paste("/dump/yunxu/working/projects.new/chromatin/result/analysis/ENm008/chain/",method,"/par.1_1_1_1/",CELL,"#
+.p1500_d3300",sep="")#
+#------------------------------------------------------------------#
+GetWeightFile <- function(ConDir){#
+	ConFiles   = list.files(path=ConDir,pattern=Type,full.names=T)#
+	NumFiles = length(ConFiles)#
+	# NumFiles = 10#
+	Weight = rep(0,NumFiles)#
+	ConList = list()#
+	for (i in 1:NumFiles){#
+		Weight[i] = read.table(ConFiles[i],comment.char="",nrows=1)[,3]#
+		ConList[[i]] = read.table(ConFiles[i])#
+	}#
+	return(list("weight"=Weight,"conlist"=ConList))#
+}#
+#------------------------------------------------------------------#
+SegLenFN="data/analysis/ENm008/ENm008.p1500.equ.seg.len.txt"#
+NumNodes=nrow(read.table(SegLenFN))+1#
+#------------------------------------------------------------------#
+#
+WeightData <- GetWeightFile(ConDir)#
+Weight <- WeightData$weight#
+ConList <- WeightData$conlist#
+NumFiles <- length(Weight)#
+#------------------------------------------------------------------#
+NewPIJMat = matrix(NA,nrow=NumNodes,ncol=NumNodes)#
+for (i in 1:(NumNodes-2)){#
+	for (j in (i+2):NumNodes){#
+		cat(i, " / ",j ," / ", NumNodes,"\n"); flush.console();#
+		ConIJ = unlist(lapply(ConList,function(x){length(which(x[,1]==i & x[,2]==j))}))#
+		NewPIJMat[i,j] = sum(ConIJ * Weight) / sum(Weight)#
+	}#
+}#
+#------------------------------------------------------------------#
+scaleMatrix <- function(mat, min_m, max_m){#
+	m <- (mat - min_m) / (max_m - min_m)#
+	return(m)#
+}#
+#------------------------------------------------------------------#
+Scale2Dist <- function(c) {sprintf("%.1f",MAX_M *c/max(c))}#
+#------------------------------------------------------------------#
+#
+axis.legend <- function(side, ...) {#
+	ylim <- current.panel.limits()$ylim#
+	switch(side,#
+	  left = {#
+			prettyY <- pretty(ylim)#
+			labY <- prettyY#
+			panel.axis(side = side, outside = TRUE,#
+			           at = prettyY, labels = labY,#
+								draw.labels =F,ticks=F)#
+	  },#
+	  right = {#
+			prettyY <- pretty(ylim)#
+			# seqY <- seq(1,max(prettyY))#
+			seqY <- prettyY#
+			labY <- Scale2Dist(seqY)#
+			panel.axis(side = side, outside = T,#
+			           at = seqY,#
+									# line.col = "black",#
+								 labels = labY,#
+								text.cex = 0.5#
+							)#
+	  },#
+	  axis.default(side = side, ...))#
+}#
+#
+#------------------------------------------------------------------#
+#
+DrawTriangleHeatmap <- function(FN,Mat,MIN_M, MAX_M, Palette,type){#
+#
+	pdf(FN)	#
+	# M = NewPIJMat#
+	# MIN_M = MIN_Dist#
+	# MAX_M = MAX_Dist#
+	# Palette = myPalette#
+	M = scaleMatrix(Mat,MIN_M, MAX_M)#
+	M[which(lower.tri(M))] = NA#
+	# trellis.par.set(axis.line=list(lwd=0,col="white"))#
+	HeatMapPlot <- levelplot(#
+		M,#
+		at = do.breaks(range(0,1),length(Palette)),#
+		col.regions=colorRampPalette(Palette, space = "Lab"),#
+		colorkey= F,#
+		xlab = "", #
+		ylab="",#
+		scales = list(draw = FALSE),#
+		par.settings = list(axis.line=list(lwd=0,col="white")),#
+		panel = function(...){#
+		    panel.levelplot(...)#
+				for (i in 1:nrow(M)){#
+					panel.text(i+0.25,i-0.5,i,cex=.5,srt=90)#
+				}#
+				# panel.text(nrow(M)/2+3,nrow(M)/2-3,paste("Window size =",NumNodesofOneWindow),cex=1,srt=45)#
+				panel.text(nrow(M)/2+5,nrow(M)/2-5,type,cex=1,srt=45)#
+				panel.text(nrow(M)/2+7,nrow(M)/2-7,CELL,cex=1,srt=45)#
+#
+				step = 5#
+				lineX = seq(step,nrow(M),by=step)#
+				for (i in 1:length(lineX)){#
+					panel.lines(#
+						x=c(lineX[i],lineX[i]),#
+						y=c(lineX[i],nrow(M)),#
+						col=grey(0.9),lwd=0.5)#
+					panel.lines(#
+						x=c(1,lineX[i]),#
+						y=c(lineX[i],lineX[i]),#
+						col=grey(0.9),lwd=0.5)#
+				}#
+		}#
+	)#
+	# trellis.par.set(axis.line=list(lwd=1))#
+	LegendPlot <- levelplot(#
+		t(as.matrix(do.breaks(range(MIN_M,MAX_M),length(Palette)-1))),#
+		col.regions=colorRampPalette(Palette, space = "Lab"),#
+		colorkey=F,#
+		xlab = "", ylab="",#
+		scales = list(#
+			x = list(draw=F)),#
+			par.settings = list(axis.line=list(lwd=.25,col="black")),#
+		axis = axis.legend,#
+	)#
+	all.layout = grid.layout(3,3,#
+	  widths = unit(c(6,1,5), c("lines","null","lines")), #
+	  heights = unit(c(6,1,5), c("lines", "null", "lines")))#
+#
+	top.vp <- viewport(layout = all.layout)#
+#
+	margin1.vp <- viewport(layout.pos.col = 2, layout.pos.row = 3, name = "margin1")#
+	margin2.vp <- viewport(layout.pos.col = 1, layout.pos.row = 2, name = "margin2")#
+	margin3.vp <- viewport(layout.pos.col = 2, layout.pos.row = 1, name = "margin3")#
+	margin4.vp <- viewport(layout.pos.col = 3, layout.pos.row = 2, name = "margin4")#
+	plot.vp <- viewport(layout.pos.col = 2, layout.pos.row = 2, name = "plot")#
+#
+	heatmap.vp <- viewport(angle = -45, name="heatmap")#
+	legend.vp <- viewport(	x = unit(2.5,"lines"),	y = unit(0.7,"npc"),#
+		width = unit(.25,"lines"),#
+		height = unit(8,"lines"),#
+		name = "legend"#
+		)#
+	n <- nrow(M) #
+#
+	label.vp <- viewport(name="label",width=sqrt(2)*(n-1)/n ,#
+	 height=unit(1,"lines"))#
+	plot.vptree <- vpTree(plot.vp,vpList(heatmap.vp,label.vp))#
+	# top.vptree <- vpTree(top.vp, vpList(margin1.vp, margin2.vp, margin3.vp, margin4.vp, plot.vptree))#
+	top.vptree <- vpTree(top.vp,#
+		vpList(margin1.vp,margin2.vp,margin3.vp,margin4.vp,plot.vptree))#
+#
+	grid.newpage()#
+	# grid.show.layout(all.layout)#
+	pushViewport(top.vptree)#
+	seekViewport("heatmap")#
+	# seekViewport("plot")#
+		 ow <- options("warn")#
+		 options(warn = -1)#
+		trellis.par.set(axis.line=list(lwd=0))#
+		print(HeatMapPlot,vp=heatmap.vp,newpage=FALSE)#
+		 options(ow)#
+	  # grid.raster(t(convertToColors(M,MIN_M,MAX_M,Palette)), interpolate = F)#
+	upViewport()#
+#
+	seekViewport("margin4")#
+	  # grid.rect(gp = gpar(col = "gray90"))#
+		pushViewport( legend.vp )#
+		trellis.par.set(axis.line=list(lwd=1))#
+		print(LegendPlot,newpage=FALSE)#
+			# seekViewport("legend")		#
+	upViewport(0)#
+	dev.off()#
+}#
+#------------------------------------------------------------------#
+OutDir = "tmp"#
+#------------------------------------------------------------------#
+#
+MIN_M = 0#
+MAX_M = 1#
+# myPalette <- brewer.pal(11, "Spectral")#
+myPalette <- brewer.pal(9,"YlGnBu")#
+# FN = paste(OutDir,"/","w_",NumNodesofOneWindow,"_mean.pdf",sep="")#
+FN = paste(OutDir,"/",CELL,".p1500_d3300.c840.pij.all.pdf",sep="")#
+cat(FN,"\n")#
+DrawTriangleHeatmap(FN,NewPIJMat,MIN_M,MAX_M,myPalette,"All")#
+#------------------------------------------------------------------#
+# alpha shape#
+OverlapFN.Common = paste("tmp/",CELL,".p1500_d3300.c840.common.a1.",Type,".txt",sep="")#
+OverlapFN.New = paste("tmp/",CELL,".p1500_d3300.c840.new.a1.",Type,".txt",sep="")#
+Overlap.Con.Common = read.table(OverlapFN.Common)#
+Overlap.Con.New = read.table(OverlapFN.New)#
+Overlap.Con.All = rbind(Overlap.Con.Common, Overlap.Con.New)#
+#------------------------------------------------------------------#
+GetSignificantMat <- function(mat, sig){#
+	# mat = newmat#
+	# sig = Overlap.Con.All#
+	for (i in 1:(NumNodes-2)){#
+		for (j in (i+2):NumNodes){#
+			if (length( which(sig[,1]==i & sig[,2]==j )   )==0){#
+				mat[i,j] = NA#
+			}#
+		}#
+	}#
+	return(mat)#
+}#
+# dev.new()#
+(FN = paste(OutDir,"/",CELL,".p1500_d3300.c840.",Type,".pij.allsig.pdf",sep=""))#
+sig.mat.all = GetSignificantMat(NewPIJMat,Overlap.Con.All)#
+DrawTriangleHeatmap(FN,sig.mat.all,MIN_M,MAX_M,myPalette,"All significant")#
+# dev.new()#
+(FN = paste(OutDir,"/",CELL,".p1500_d3300.c840.",Type,".pij.newsig.pdf",sep=""))#
+sig.mat.new = GetSignificantMat(NewPIJMat,Overlap.Con.New)#
+DrawTriangleHeatmap(FN,sig.mat.new,MIN_M,MAX_M,myPalette,"New significant")#
+# dev.new()#
+(FN = paste(OutDir,"/",CELL,".p1500_d3300.c840.",Type,".pij.commonsig.pdf",sep=""))#
+sig.mat.common = GetSignificantMat(NewPIJMat,Overlap.Con.Common)#
+DrawTriangleHeatmap(FN,sig.mat.common,MIN_M,MAX_M,myPalette,"Common significant")#
+#------------------------------------------------------------------#
+StripedDiagMatrix <- function(mat,away_s,away_e){#
+	# mat is a upper triangle matrix#
+	# mat = sig.mat.all#
+	# away_s = 10#
+	# away_e = 54#
+	NumElement = nrow(mat)#
+	set_full = seq(1,NumElement)#
+	# print(away_s)#
+#
+	for (i in 1:NumElement){#
+		set_need = intersect(set_full, i + seq(away_s,away_e))#
+		set_ignore = setdiff(set_full, set_need)#
+		mat[i,set_ignore] = NA#
+	}#
+	tmat = t(mat)#
+	mat[which(lower.tri(mat))] = tmat[which(lower.tri(tmat))]#
+	return(mat)#
+}#
+#------------------------------------------------------------------#
+graphics.off()#
+#------------------------------------------------------------------#
+away_s = 1#
+away_e = NumNodes#
+sig.mat.sel_all = StripedDiagMatrix(sig.mat.all,away_s,away_e)#
+(FN <- paste(OutDir,"/",CELL,".p1500_d3300.c840.",Type,".pij.all.",away_s,"-",away_e,".pdf",sep=""))#
+DrawTriangleHeatmap(FN,sig.mat.sel_all,MIN_M,MAX_M,myPalette,paste("Range", away_s,"-",away_e, "significant"))#
+CI_all = rowSums(sig.mat.sel_all,na.rm=T)#
+#------------------------------------------------------------------#
+away_s = 1#
+away_e = 10#
+sig.mat.sel_close = StripedDiagMatrix(sig.mat.all,away_s,away_e)#
+(FN <- paste(OutDir,"/",CELL,".p1500_d3300.c840.",Type,".pij.all.",away_s,"-",away_e,".pdf",sep=""))#
+DrawTriangleHeatmap(FN,sig.mat.sel_close,MIN_M,MAX_M,myPalette,paste("Range", away_s,"-",away_e, "significant"))#
+CI_close = rowSums(sig.mat.sel_close,na.rm=T)#
+#------------------------------------------------------------------#
+away_s = 11#
+away_e = NumNodes#
+sig.mat.sel_far = StripedDiagMatrix(sig.mat.all,away_s,away_e)#
+(FN <- paste(OutDir,"/",CELL,".p1500_d3300.c840.",Type,".pij.all.",away_s,"-",away_e,".pdf",sep=""))#
+DrawTriangleHeatmap(FN,sig.mat.sel_far,MIN_M,MAX_M,myPalette,paste("Range", away_s,"-",away_e, "significant"))#
+CI_far = rowSums(sig.mat.sel_far,na.rm=T)#
+#------------------------------------------------------------------#
+df <- data.frame(#
+	NodeIndex=1:NumNodes,#
+	ContactIndex_all = rowSums(sig.mat.sel_all,na.rm=T),#
+	ContactIndex_close = rowSums(sig.mat.sel_close,na.rm=T),#
+	ContactIndex_far = rowSums(sig.mat.sel_far,na.rm=T))#
+df_long <- melt(df,id="NodeIndex")#
+#
+#------------------------------------------------------------------#
+p <- ggplot(data=df_long,aes(x=NodeIndex,y=value,color=variable)) +#
+	theme_bw() +#
+	geom_line() + geom_point() +#
+	theme(legend.position = "none") +#
+	labs(y = "Contact Index") +#
+	scale_colour_brewer(palette="Set1") +#
+	scale_x_continuous(breaks=seq(5,NumNodes,by=5))#
+#
+(FN <- paste(OutDir,"/",CELL,".p1500_d3300.c840.",Type,".pij.all.contactindex.vertical.pdf",sep=""))#
+pdf(file=FN,width=3, height=5)#
+p + facet_grid(variable ~.) #
+dev.off()#
+#
+(FN <- paste(OutDir,"/",CELL,".p1500_d3300.c840.",Type,".pij.all.contactindex.horizon.pdf",sep=""))#
+pdf(file=FN,width=10, height=2)#
+p + facet_grid(. ~ variable) #
+dev.off()#
+#
+#------------------------------------------------------------------#
+(FN <- paste(OutDir,"/",CELL,".p1500_d3300.c840.",Type,".pij.all.contactindex.txt",sep=""))#
+write.table( file=FN,#
+	paste("#",paste(colnames(df),collapse="\t")), #
+	quote=F,row.names=F,col.names=F)#
+write.table( file =FN,#
+	apply(df,1,function(x){sprintf("%g\t%.3f\t%.3f\t%.3f",x[1],x[2],x[3],x[4])}),#
+	quote=F,row.names=F,col.names=F,append=T)#
+#------------------------------------------------------------------
+ConDir
+!/usr/bin/R#
+rm(list=ls())#
+#------------------------------------------------------------------#
+library(grid)#
+library(lattice)#
+library(RColorBrewer)#
+library(reshape)#
+library(ggplot2)#
+#------------------------------------------------------------------#
+#
+if (Sys.info()["sysname"] == "Darwin"){#
+	CELL = "K562"#
+	CELL = "GM12878"#
+}else{#
+	CELL = args[1]#
+}#
+#
+#------------------------------------------------------------------#
+# NumMax = 1000#
+Type="r270.ovl"#
+method="alpha"#
+#------------------------------------------------------------------#
+Type=".con"#
+method = "cut.all"#
+#------------------------------------------------------------------#
+ConDir=paste("/Users/yunxu/workspace/projects/chromatin/result/analysis/ENm008/chain/",method,"/par.1_1_1_1/",CELL,".#
+p1500_d3300",sep="")#
+# ConDir=paste("/dump/yunxu/working/projects.new/chromatin/result/analysis/ENm008/chain/",method,"/par.1_1_1_1/",CELL,".p1500_d3300",sep="")#
+#------------------------------------------------------------------#
+GetWeightFile <- function(ConDir){#
+	ConFiles   = list.files(path=ConDir,pattern=Type,full.names=T)#
+	NumFiles = length(ConFiles)#
+	# NumFiles = 10#
+	Weight = rep(0,NumFiles)#
+	ConList = list()#
+	for (i in 1:NumFiles){#
+		Weight[i] = read.table(ConFiles[i],comment.char="",nrows=1)[,3]#
+		ConList[[i]] = read.table(ConFiles[i])#
+	}#
+	return(list("weight"=Weight,"conlist"=ConList))#
+}#
+#------------------------------------------------------------------#
+SegLenFN="data/analysis/ENm008/ENm008.p1500.equ.seg.len.txt"#
+NumNodes=nrow(read.table(SegLenFN))+1#
+#------------------------------------------------------------------#
+#
+WeightData <- GetWeightFile(ConDir)#
+Weight <- WeightData$weight#
+ConList <- WeightData$conlist#
+NumFiles <- length(Weight)#
+#------------------------------------------------------------------#
+NewPIJMat = matrix(NA,nrow=NumNodes,ncol=NumNodes)#
+for (i in 1:(NumNodes-2)){#
+	for (j in (i+2):NumNodes){#
+		cat(i, " / ",j ," / ", NumNodes,"\n"); flush.console();#
+		ConIJ = unlist(lapply(ConList,function(x){length(which(x[,1]==i & x[,2]==j))}))#
+		NewPIJMat[i,j] = sum(ConIJ * Weight) / sum(Weight)#
+	}#
+}#
+#------------------------------------------------------------------#
+scaleMatrix <- function(mat, min_m, max_m){#
+	m <- (mat - min_m) / (max_m - min_m)#
+	return(m)#
+}#
+#------------------------------------------------------------------#
+Scale2Dist <- function(c) {sprintf("%.1f",MAX_M *c/max(c))}#
+#------------------------------------------------------------------#
+#
+axis.legend <- function(side, ...) {#
+	ylim <- current.panel.limits()$ylim#
+	switch(side,#
+	  left = {#
+			prettyY <- pretty(ylim)#
+			labY <- prettyY#
+			panel.axis(side = side, outside = TRUE,#
+			           at = prettyY, labels = labY,#
+								draw.labels =F,ticks=F)#
+	  },#
+	  right = {#
+			prettyY <- pretty(ylim)#
+			# seqY <- seq(1,max(prettyY))#
+			seqY <- prettyY#
+			labY <- Scale2Dist(seqY)#
+			panel.axis(side = side, outside = T,#
+			           at = seqY,#
+									# line.col = "black",#
+								 labels = labY,#
+								text.cex = 0.5#
+							)#
+	  },#
+	  axis.default(side = side, ...))#
+}#
+#
+#------------------------------------------------------------------#
+#
+DrawTriangleHeatmap <- function(FN,Mat,MIN_M, MAX_M, Palette,type){#
+#
+	pdf(FN)	#
+	# M = NewPIJMat#
+	# MIN_M = MIN_Dist#
+	# MAX_M = MAX_Dist#
+	# Palette = myPalette#
+	M = scaleMatrix(Mat,MIN_M, MAX_M)#
+	M[which(lower.tri(M))] = NA#
+	# trellis.par.set(axis.line=list(lwd=0,col="white"))#
+	HeatMapPlot <- levelplot(#
+		M,#
+		at = do.breaks(range(0,1),length(Palette)),#
+		col.regions=colorRampPalette(Palette, space = "Lab"),#
+		colorkey= F,#
+		xlab = "", #
+		ylab="",#
+		scales = list(draw = FALSE),#
+		par.settings = list(axis.line=list(lwd=0,col="white")),#
+		panel = function(...){#
+		    panel.levelplot(...)#
+				for (i in 1:nrow(M)){#
+					panel.text(i+0.25,i-0.5,i,cex=.5,srt=90)#
+				}#
+				# panel.text(nrow(M)/2+3,nrow(M)/2-3,paste("Window size =",NumNodesofOneWindow),cex=1,srt=45)#
+				panel.text(nrow(M)/2+5,nrow(M)/2-5,type,cex=1,srt=45)#
+				panel.text(nrow(M)/2+7,nrow(M)/2-7,CELL,cex=1,srt=45)#
+#
+				step = 5#
+				lineX = seq(step,nrow(M),by=step)#
+				for (i in 1:length(lineX)){#
+					panel.lines(#
+						x=c(lineX[i],lineX[i]),#
+						y=c(lineX[i],nrow(M)),#
+						col=grey(0.9),lwd=0.5)#
+					panel.lines(#
+						x=c(1,lineX[i]),#
+						y=c(lineX[i],lineX[i]),#
+						col=grey(0.9),lwd=0.5)#
+				}#
+		}#
+	)#
+	# trellis.par.set(axis.line=list(lwd=1))#
+	LegendPlot <- levelplot(#
+		t(as.matrix(do.breaks(range(MIN_M,MAX_M),length(Palette)-1))),#
+		col.regions=colorRampPalette(Palette, space = "Lab"),#
+		colorkey=F,#
+		xlab = "", ylab="",#
+		scales = list(#
+			x = list(draw=F)),#
+			par.settings = list(axis.line=list(lwd=.25,col="black")),#
+		axis = axis.legend,#
+	)#
+	all.layout = grid.layout(3,3,#
+	  widths = unit(c(6,1,5), c("lines","null","lines")), #
+	  heights = unit(c(6,1,5), c("lines", "null", "lines")))#
+#
+	top.vp <- viewport(layout = all.layout)#
+#
+	margin1.vp <- viewport(layout.pos.col = 2, layout.pos.row = 3, name = "margin1")#
+	margin2.vp <- viewport(layout.pos.col = 1, layout.pos.row = 2, name = "margin2")#
+	margin3.vp <- viewport(layout.pos.col = 2, layout.pos.row = 1, name = "margin3")#
+	margin4.vp <- viewport(layout.pos.col = 3, layout.pos.row = 2, name = "margin4")#
+	plot.vp <- viewport(layout.pos.col = 2, layout.pos.row = 2, name = "plot")#
+#
+	heatmap.vp <- viewport(angle = -45, name="heatmap")#
+	legend.vp <- viewport(	x = unit(2.5,"lines"),	y = unit(0.7,"npc"),#
+		width = unit(.25,"lines"),#
+		height = unit(8,"lines"),#
+		name = "legend"#
+		)#
+	n <- nrow(M) #
+#
+	label.vp <- viewport(name="label",width=sqrt(2)*(n-1)/n ,#
+	 height=unit(1,"lines"))#
+	plot.vptree <- vpTree(plot.vp,vpList(heatmap.vp,label.vp))#
+	# top.vptree <- vpTree(top.vp, vpList(margin1.vp, margin2.vp, margin3.vp, margin4.vp, plot.vptree))#
+	top.vptree <- vpTree(top.vp,#
+		vpList(margin1.vp,margin2.vp,margin3.vp,margin4.vp,plot.vptree))#
+#
+	grid.newpage()#
+	# grid.show.layout(all.layout)#
+	pushViewport(top.vptree)#
+	seekViewport("heatmap")#
+	# seekViewport("plot")#
+		 ow <- options("warn")#
+		 options(warn = -1)#
+		trellis.par.set(axis.line=list(lwd=0))#
+		print(HeatMapPlot,vp=heatmap.vp,newpage=FALSE)#
+		 options(ow)#
+	  # grid.raster(t(convertToColors(M,MIN_M,MAX_M,Palette)), interpolate = F)#
+	upViewport()#
+#
+	seekViewport("margin4")#
+	  # grid.rect(gp = gpar(col = "gray90"))#
+		pushViewport( legend.vp )#
+		trellis.par.set(axis.line=list(lwd=1))#
+		print(LegendPlot,newpage=FALSE)#
+			# seekViewport("legend")		#
+	upViewport(0)#
+	dev.off()#
+}#
+#------------------------------------------------------------------#
+OutDir = "tmp"#
+#------------------------------------------------------------------#
+#
+MIN_M = 0#
+MAX_M = 1#
+# myPalette <- brewer.pal(11, "Spectral")#
+myPalette <- brewer.pal(9,"YlGnBu")#
+# FN = paste(OutDir,"/","w_",NumNodesofOneWindow,"_mean.pdf",sep="")#
+FN = paste(OutDir,"/",CELL,".p1500_d3300.c840.pij.all.pdf",sep="")#
+cat(FN,"\n")#
+DrawTriangleHeatmap(FN,NewPIJMat,MIN_M,MAX_M,myPalette,"All")#
+#------------------------------------------------------------------#
+# alpha shape#
+OverlapFN.Common = paste("tmp/",CELL,".p1500_d3300.c840.common.a1.",Type,".txt",sep="")#
+OverlapFN.New = paste("tmp/",CELL,".p1500_d3300.c840.new.a1.",Type,".txt",sep="")#
+Overlap.Con.Common = read.table(OverlapFN.Common)#
+Overlap.Con.New = read.table(OverlapFN.New)#
+Overlap.Con.All = rbind(Overlap.Con.Common, Overlap.Con.New)#
+#------------------------------------------------------------------#
+GetSignificantMat <- function(mat, sig){#
+	# mat = newmat#
+	# sig = Overlap.Con.All#
+	for (i in 1:(NumNodes-2)){#
+		for (j in (i+2):NumNodes){#
+			if (length( which(sig[,1]==i & sig[,2]==j )   )==0){#
+				mat[i,j] = NA#
+			}#
+		}#
+	}#
+	return(mat)#
+}#
+# dev.new()#
+(FN = paste(OutDir,"/",CELL,".p1500_d3300.c840.",Type,".pij.allsig.pdf",sep=""))#
+sig.mat.all = GetSignificantMat(NewPIJMat,Overlap.Con.All)#
+DrawTriangleHeatmap(FN,sig.mat.all,MIN_M,MAX_M,myPalette,"All significant")#
+# dev.new()#
+(FN = paste(OutDir,"/",CELL,".p1500_d3300.c840.",Type,".pij.newsig.pdf",sep=""))#
+sig.mat.new = GetSignificantMat(NewPIJMat,Overlap.Con.New)#
+DrawTriangleHeatmap(FN,sig.mat.new,MIN_M,MAX_M,myPalette,"New significant")#
+# dev.new()#
+(FN = paste(OutDir,"/",CELL,".p1500_d3300.c840.",Type,".pij.commonsig.pdf",sep=""))#
+sig.mat.common = GetSignificantMat(NewPIJMat,Overlap.Con.Common)#
+DrawTriangleHeatmap(FN,sig.mat.common,MIN_M,MAX_M,myPalette,"Common significant")#
+#------------------------------------------------------------------#
+StripedDiagMatrix <- function(mat,away_s,away_e){#
+	# mat is a upper triangle matrix#
+	# mat = sig.mat.all#
+	# away_s = 10#
+	# away_e = 54#
+	NumElement = nrow(mat)#
+	set_full = seq(1,NumElement)#
+	# print(away_s)#
+#
+	for (i in 1:NumElement){#
+		set_need = intersect(set_full, i + seq(away_s,away_e))#
+		set_ignore = setdiff(set_full, set_need)#
+		mat[i,set_ignore] = NA#
+	}#
+	tmat = t(mat)#
+	mat[which(lower.tri(mat))] = tmat[which(lower.tri(tmat))]#
+	return(mat)#
+}#
+#------------------------------------------------------------------#
+graphics.off()#
+#------------------------------------------------------------------#
+away_s = 1#
+away_e = NumNodes#
+sig.mat.sel_all = StripedDiagMatrix(sig.mat.all,away_s,away_e)#
+(FN <- paste(OutDir,"/",CELL,".p1500_d3300.c840.",Type,".pij.all.",away_s,"-",away_e,".pdf",sep=""))#
+DrawTriangleHeatmap(FN,sig.mat.sel_all,MIN_M,MAX_M,myPalette,paste("Range", away_s,"-",away_e, "significant"))#
+CI_all = rowSums(sig.mat.sel_all,na.rm=T)#
+#------------------------------------------------------------------#
+away_s = 1#
+away_e = 10#
+sig.mat.sel_close = StripedDiagMatrix(sig.mat.all,away_s,away_e)#
+(FN <- paste(OutDir,"/",CELL,".p1500_d3300.c840.",Type,".pij.all.",away_s,"-",away_e,".pdf",sep=""))#
+DrawTriangleHeatmap(FN,sig.mat.sel_close,MIN_M,MAX_M,myPalette,paste("Range", away_s,"-",away_e, "significant"))#
+CI_close = rowSums(sig.mat.sel_close,na.rm=T)#
+#------------------------------------------------------------------#
+away_s = 11#
+away_e = NumNodes#
+sig.mat.sel_far = StripedDiagMatrix(sig.mat.all,away_s,away_e)#
+(FN <- paste(OutDir,"/",CELL,".p1500_d3300.c840.",Type,".pij.all.",away_s,"-",away_e,".pdf",sep=""))#
+DrawTriangleHeatmap(FN,sig.mat.sel_far,MIN_M,MAX_M,myPalette,paste("Range", away_s,"-",away_e, "significant"))#
+CI_far = rowSums(sig.mat.sel_far,na.rm=T)#
+#------------------------------------------------------------------#
+df <- data.frame(#
+	NodeIndex=1:NumNodes,#
+	ContactIndex_all = rowSums(sig.mat.sel_all,na.rm=T),#
+	ContactIndex_close = rowSums(sig.mat.sel_close,na.rm=T),#
+	ContactIndex_far = rowSums(sig.mat.sel_far,na.rm=T))#
+df_long <- melt(df,id="NodeIndex")#
+#
+#------------------------------------------------------------------#
+p <- ggplot(data=df_long,aes(x=NodeIndex,y=value,color=variable)) +#
+	theme_bw() +#
+	geom_line() + geom_point() +#
+	theme(legend.position = "none") +#
+	labs(y = "Contact Index") +#
+	scale_colour_brewer(palette="Set1") +#
+	scale_x_continuous(breaks=seq(5,NumNodes,by=5))#
+#
+(FN <- paste(OutDir,"/",CELL,".p1500_d3300.c840.",Type,".pij.all.contactindex.vertical.pdf",sep=""))#
+pdf(file=FN,width=3, height=5)#
+p + facet_grid(variable ~.) #
+dev.off()#
+#
+(FN <- paste(OutDir,"/",CELL,".p1500_d3300.c840.",Type,".pij.all.contactindex.horizon.pdf",sep=""))#
+pdf(file=FN,width=10, height=2)#
+p + facet_grid(. ~ variable) #
+dev.off()#
+#
+#------------------------------------------------------------------#
+(FN <- paste(OutDir,"/",CELL,".p1500_d3300.c840.",Type,".pij.all.contactindex.txt",sep=""))#
+write.table( file=FN,#
+	paste("#",paste(colnames(df),collapse="\t")), #
+	quote=F,row.names=F,col.names=F)#
+write.table( file =FN,#
+	apply(df,1,function(x){sprintf("%g\t%.3f\t%.3f\t%.3f",x[1],x[2],x[3],x[4])}),#
+	quote=F,row.names=F,col.names=F,append=T)#
+#------------------------------------------------------------------
+ConDir
+!/usr/bin/R#
+rm(list=ls())#
+#------------------------------------------------------------------#
+library(grid)#
+library(lattice)#
+library(RColorBrewer)#
+library(reshape)#
+library(ggplot2)#
+#------------------------------------------------------------------#
+#
+if (Sys.info()["sysname"] == "Darwin"){#
+	CELL = "K562"#
+	CELL = "GM12878"#
+}else{#
+	CELL = args[1]#
+}#
+#
+#------------------------------------------------------------------#
+# NumMax = 1000#
+Type="r270.ovl"#
+method="alpha"#
+#------------------------------------------------------------------#
+Type=".con"#
+method = "cut.all"#
+#------------------------------------------------------------------#
+ConDir=paste("/Users/yunxu/workspace/projects/chromatin/result/analysis/ENm008/chain/",method,"/par.1_1_1_1/",CELL,".p1500_d3300",sep="")#
+# ConDir=paste("/dump/yunxu/working/projects.new/chromatin/result/analysis/ENm008/chain/",method,"/par.1_1_1_1/",CELL,".p1500_d3300",sep="")#
+#------------------------------------------------------------------#
+GetWeightFile <- function(ConDir){#
+	ConFiles   = list.files(path=ConDir,pattern=Type,full.names=T)#
+	NumFiles = length(ConFiles)#
+	# NumFiles = 10#
+	Weight = rep(0,NumFiles)#
+	ConList = list()#
+	for (i in 1:NumFiles){#
+		Weight[i] = read.table(ConFiles[i],comment.char="",nrows=1)[,3]#
+		ConList[[i]] = read.table(ConFiles[i])#
+	}#
+	return(list("weight"=Weight,"conlist"=ConList))#
+}#
+#------------------------------------------------------------------#
+SegLenFN="data/analysis/ENm008/ENm008.p1500.equ.seg.len.txt"#
+NumNodes=nrow(read.table(SegLenFN))+1#
+#------------------------------------------------------------------#
+#
+WeightData <- GetWeightFile(ConDir)#
+Weight <- WeightData$weight#
+ConList <- WeightData$conlist#
+NumFiles <- length(Weight)#
+#------------------------------------------------------------------#
+NewPIJMat = matrix(NA,nrow=NumNodes,ncol=NumNodes)#
+for (i in 1:(NumNodes-2)){#
+	for (j in (i+2):NumNodes){#
+		cat(i, " / ",j ," / ", NumNodes,"\n"); flush.console();#
+		ConIJ = unlist(lapply(ConList,function(x){length(which(x[,1]==i & x[,2]==j))}))#
+		NewPIJMat[i,j] = sum(ConIJ * Weight) / sum(Weight)#
+	}#
+}#
+#------------------------------------------------------------------#
+scaleMatrix <- function(mat, min_m, max_m){#
+	m <- (mat - min_m) / (max_m - min_m)#
+	return(m)#
+}#
+#------------------------------------------------------------------#
+Scale2Dist <- function(c) {sprintf("%.1f",MAX_M *c/max(c))}#
+#------------------------------------------------------------------#
+#
+axis.legend <- function(side, ...) {#
+	ylim <- current.panel.limits()$ylim#
+	switch(side,#
+	  left = {#
+			prettyY <- pretty(ylim)#
+			labY <- prettyY#
+			panel.axis(side = side, outside = TRUE,#
+			           at = prettyY, labels = labY,#
+								draw.labels =F,ticks=F)#
+	  },#
+	  right = {#
+			prettyY <- pretty(ylim)#
+			# seqY <- seq(1,max(prettyY))#
+			seqY <- prettyY#
+			labY <- Scale2Dist(seqY)#
+			panel.axis(side = side, outside = T,#
+			           at = seqY,#
+									# line.col = "black",#
+								 labels = labY,#
+								text.cex = 0.5#
+							)#
+	  },#
+	  axis.default(side = side, ...))#
+}#
+#
+#------------------------------------------------------------------#
+#
+DrawTriangleHeatmap <- function(FN,Mat,MIN_M, MAX_M, Palette,type){#
+#
+	pdf(FN)	#
+	# M = NewPIJMat#
+	# MIN_M = MIN_Dist#
+	# MAX_M = MAX_Dist#
+	# Palette = myPalette#
+	M = scaleMatrix(Mat,MIN_M, MAX_M)#
+	M[which(lower.tri(M))] = NA#
+	# trellis.par.set(axis.line=list(lwd=0,col="white"))#
+	HeatMapPlot <- levelplot(#
+		M,#
+		at = do.breaks(range(0,1),length(Palette)),#
+		col.regions=colorRampPalette(Palette, space = "Lab"),#
+		colorkey= F,#
+		xlab = "", #
+		ylab="",#
+		scales = list(draw = FALSE),#
+		par.settings = list(axis.line=list(lwd=0,col="white")),#
+		panel = function(...){#
+		    panel.levelplot(...)#
+				for (i in 1:nrow(M)){#
+					panel.text(i+0.25,i-0.5,i,cex=.5,srt=90)#
+				}#
+				# panel.text(nrow(M)/2+3,nrow(M)/2-3,paste("Window size =",NumNodesofOneWindow),cex=1,srt=45)#
+				panel.text(nrow(M)/2+5,nrow(M)/2-5,type,cex=1,srt=45)#
+				panel.text(nrow(M)/2+7,nrow(M)/2-7,CELL,cex=1,srt=45)#
+#
+				step = 5#
+				lineX = seq(step,nrow(M),by=step)#
+				for (i in 1:length(lineX)){#
+					panel.lines(#
+						x=c(lineX[i],lineX[i]),#
+						y=c(lineX[i],nrow(M)),#
+						col=grey(0.9),lwd=0.5)#
+					panel.lines(#
+						x=c(1,lineX[i]),#
+						y=c(lineX[i],lineX[i]),#
+						col=grey(0.9),lwd=0.5)#
+				}#
+		}#
+	)#
+	# trellis.par.set(axis.line=list(lwd=1))#
+	LegendPlot <- levelplot(#
+		t(as.matrix(do.breaks(range(MIN_M,MAX_M),length(Palette)-1))),#
+		col.regions=colorRampPalette(Palette, space = "Lab"),#
+		colorkey=F,#
+		xlab = "", ylab="",#
+		scales = list(#
+			x = list(draw=F)),#
+			par.settings = list(axis.line=list(lwd=.25,col="black")),#
+		axis = axis.legend,#
+	)#
+	all.layout = grid.layout(3,3,#
+	  widths = unit(c(6,1,5), c("lines","null","lines")), #
+	  heights = unit(c(6,1,5), c("lines", "null", "lines")))#
+#
+	top.vp <- viewport(layout = all.layout)#
+#
+	margin1.vp <- viewport(layout.pos.col = 2, layout.pos.row = 3, name = "margin1")#
+	margin2.vp <- viewport(layout.pos.col = 1, layout.pos.row = 2, name = "margin2")#
+	margin3.vp <- viewport(layout.pos.col = 2, layout.pos.row = 1, name = "margin3")#
+	margin4.vp <- viewport(layout.pos.col = 3, layout.pos.row = 2, name = "margin4")#
+	plot.vp <- viewport(layout.pos.col = 2, layout.pos.row = 2, name = "plot")#
+#
+	heatmap.vp <- viewport(angle = -45, name="heatmap")#
+	legend.vp <- viewport(	x = unit(2.5,"lines"),	y = unit(0.7,"npc"),#
+		width = unit(.25,"lines"),#
+		height = unit(8,"lines"),#
+		name = "legend"#
+		)#
+	n <- nrow(M) #
+#
+	label.vp <- viewport(name="label",width=sqrt(2)*(n-1)/n ,#
+	 height=unit(1,"lines"))#
+	plot.vptree <- vpTree(plot.vp,vpList(heatmap.vp,label.vp))#
+	# top.vptree <- vpTree(top.vp, vpList(margin1.vp, margin2.vp, margin3.vp, margin4.vp, plot.vptree))#
+	top.vptree <- vpTree(top.vp,#
+		vpList(margin1.vp,margin2.vp,margin3.vp,margin4.vp,plot.vptree))#
+#
+	grid.newpage()#
+	# grid.show.layout(all.layout)#
+	pushViewport(top.vptree)#
+	seekViewport("heatmap")#
+	# seekViewport("plot")#
+		 ow <- options("warn")#
+		 options(warn = -1)#
+		trellis.par.set(axis.line=list(lwd=0))#
+		print(HeatMapPlot,vp=heatmap.vp,newpage=FALSE)#
+		 options(ow)#
+	  # grid.raster(t(convertToColors(M,MIN_M,MAX_M,Palette)), interpolate = F)#
+	upViewport()#
+#
+	seekViewport("margin4")#
+	  # grid.rect(gp = gpar(col = "gray90"))#
+		pushViewport( legend.vp )#
+		trellis.par.set(axis.line=list(lwd=1))#
+		print(LegendPlot,newpage=FALSE)#
+			# seekViewport("legend")		#
+	upViewport(0)#
+	dev.off()#
+}#
+#------------------------------------------------------------------#
+OutDir = "tmp"#
+#------------------------------------------------------------------#
+#
+MIN_M = 0#
+MAX_M = 1#
+# myPalette <- brewer.pal(11, "Spectral")#
+myPalette <- brewer.pal(9,"YlGnBu")#
+# FN = paste(OutDir,"/","w_",NumNodesofOneWindow,"_mean.pdf",sep="")#
+FN = paste(OutDir,"/",CELL,".p1500_d3300.c840.pij.all.pdf",sep="")#
+cat(FN,"\n")#
+DrawTriangleHeatmap(FN,NewPIJMat,MIN_M,MAX_M,myPalette,"All")#
+#------------------------------------------------------------------#
+# alpha shape#
+OverlapFN.Common = paste("tmp/",CELL,".p1500_d3300.c840.common.a1.",Type,".txt",sep="")#
+OverlapFN.New = paste("tmp/",CELL,".p1500_d3300.c840.new.a1.",Type,".txt",sep="")#
+Overlap.Con.Common = read.table(OverlapFN.Common)#
+Overlap.Con.New = read.table(OverlapFN.New)#
+Overlap.Con.All = rbind(Overlap.Con.Common, Overlap.Con.New)#
+#------------------------------------------------------------------#
+GetSignificantMat <- function(mat, sig){#
+	# mat = newmat#
+	# sig = Overlap.Con.All#
+	for (i in 1:(NumNodes-2)){#
+		for (j in (i+2):NumNodes){#
+			if (length( which(sig[,1]==i & sig[,2]==j )   )==0){#
+				mat[i,j] = NA#
+			}#
+		}#
+	}#
+	return(mat)#
+}#
+# dev.new()#
+(FN = paste(OutDir,"/",CELL,".p1500_d3300.c840.",Type,".pij.allsig.pdf",sep=""))#
+sig.mat.all = GetSignificantMat(NewPIJMat,Overlap.Con.All)#
+DrawTriangleHeatmap(FN,sig.mat.all,MIN_M,MAX_M,myPalette,"All significant")#
+# dev.new()#
+(FN = paste(OutDir,"/",CELL,".p1500_d3300.c840.",Type,".pij.newsig.pdf",sep=""))#
+sig.mat.new = GetSignificantMat(NewPIJMat,Overlap.Con.New)#
+DrawTriangleHeatmap(FN,sig.mat.new,MIN_M,MAX_M,myPalette,"New significant")#
+# dev.new()#
+(FN = paste(OutDir,"/",CELL,".p1500_d3300.c840.",Type,".pij.commonsig.pdf",sep=""))#
+sig.mat.common = GetSignificantMat(NewPIJMat,Overlap.Con.Common)#
+DrawTriangleHeatmap(FN,sig.mat.common,MIN_M,MAX_M,myPalette,"Common significant")#
+#------------------------------------------------------------------#
+StripedDiagMatrix <- function(mat,away_s,away_e){#
+	# mat is a upper triangle matrix#
+	# mat = sig.mat.all#
+	# away_s = 10#
+	# away_e = 54#
+	NumElement = nrow(mat)#
+	set_full = seq(1,NumElement)#
+	# print(away_s)#
+#
+	for (i in 1:NumElement){#
+		set_need = intersect(set_full, i + seq(away_s,away_e))#
+		set_ignore = setdiff(set_full, set_need)#
+		mat[i,set_ignore] = NA#
+	}#
+	tmat = t(mat)#
+	mat[which(lower.tri(mat))] = tmat[which(lower.tri(tmat))]#
+	return(mat)#
+}#
+#------------------------------------------------------------------#
+graphics.off()#
+#------------------------------------------------------------------#
+away_s = 1#
+away_e = NumNodes#
+sig.mat.sel_all = StripedDiagMatrix(sig.mat.all,away_s,away_e)#
+(FN <- paste(OutDir,"/",CELL,".p1500_d3300.c840.",Type,".pij.all.",away_s,"-",away_e,".pdf",sep=""))#
+DrawTriangleHeatmap(FN,sig.mat.sel_all,MIN_M,MAX_M,myPalette,paste("Range", away_s,"-",away_e, "significant"))#
+CI_all = rowSums(sig.mat.sel_all,na.rm=T)#
+#------------------------------------------------------------------#
+away_s = 1#
+away_e = 10#
+sig.mat.sel_close = StripedDiagMatrix(sig.mat.all,away_s,away_e)#
+(FN <- paste(OutDir,"/",CELL,".p1500_d3300.c840.",Type,".pij.all.",away_s,"-",away_e,".pdf",sep=""))#
+DrawTriangleHeatmap(FN,sig.mat.sel_close,MIN_M,MAX_M,myPalette,paste("Range", away_s,"-",away_e, "significant"))#
+CI_close = rowSums(sig.mat.sel_close,na.rm=T)#
+#------------------------------------------------------------------#
+away_s = 11#
+away_e = NumNodes#
+sig.mat.sel_far = StripedDiagMatrix(sig.mat.all,away_s,away_e)#
+(FN <- paste(OutDir,"/",CELL,".p1500_d3300.c840.",Type,".pij.all.",away_s,"-",away_e,".pdf",sep=""))#
+DrawTriangleHeatmap(FN,sig.mat.sel_far,MIN_M,MAX_M,myPalette,paste("Range", away_s,"-",away_e, "significant"))#
+CI_far = rowSums(sig.mat.sel_far,na.rm=T)#
+#------------------------------------------------------------------#
+df <- data.frame(#
+	NodeIndex=1:NumNodes,#
+	ContactIndex_all = rowSums(sig.mat.sel_all,na.rm=T),#
+	ContactIndex_close = rowSums(sig.mat.sel_close,na.rm=T),#
+	ContactIndex_far = rowSums(sig.mat.sel_far,na.rm=T))#
+df_long <- melt(df,id="NodeIndex")#
+#
+#------------------------------------------------------------------#
+p <- ggplot(data=df_long,aes(x=NodeIndex,y=value,color=variable)) +#
+	theme_bw() +#
+	geom_line() + geom_point() +#
+	theme(legend.position = "none") +#
+	labs(y = "Contact Index") +#
+	scale_colour_brewer(palette="Set1") +#
+	scale_x_continuous(breaks=seq(5,NumNodes,by=5))#
+#
+(FN <- paste(OutDir,"/",CELL,".p1500_d3300.c840.",Type,".pij.all.contactindex.vertical.pdf",sep=""))#
+pdf(file=FN,width=3, height=5)#
+p + facet_grid(variable ~.) #
+dev.off()#
+#
+(FN <- paste(OutDir,"/",CELL,".p1500_d3300.c840.",Type,".pij.all.contactindex.horizon.pdf",sep=""))#
+pdf(file=FN,width=10, height=2)#
+p + facet_grid(. ~ variable) #
+dev.off()#
+#
+#------------------------------------------------------------------#
+(FN <- paste(OutDir,"/",CELL,".p1500_d3300.c840.",Type,".pij.all.contactindex.txt",sep=""))#
+write.table( file=FN,#
+	paste("#",paste(colnames(df),collapse="\t")), #
+	quote=F,row.names=F,col.names=F)#
+write.table( file =FN,#
+	apply(df,1,function(x){sprintf("%g\t%.3f\t%.3f\t%.3f",x[1],x[2],x[3],x[4])}),#
+	quote=F,row.names=F,col.names=F,append=T)#
+#------------------------------------------------------------------
+setwd('/Users/yunxu/workspace/projects/chromatin/ttt')
+!/usr/bin/R#
+#
+GMCIFile="../script/tmp/GM12878.p1500_d3300.c840.con.pij.all.contactindex.txt"#
+KCIFile = "../script/tmp/K562.p1500_d3300.c840.con.pij.all.contactindex.txt"#
+#
+GMData = read.table(GMCIFile)#
+KData = read.table(KCIFile)
+GMData
+KData
+DiffData = GMData[,2:4] - KData[,2:4]
+DiffData
+library(ggplot2)
+DiffData = cbind(GMData[,1], (GMData[,2:4] - KData[,2:4]))
+melt(DiffData)
+?read.table
+GMCIFile="../script/tmp/GM12878.p1500_d3300.c840.con.pij.all.contactindex.txt"#
+KCIFile = "../script/tmp/K562.p1500_d3300.c840.con.pij.all.contactindex.txt"#
+#
+GMData = read.table(GMCIFile,)#
+rownames(GMData) = c("NodeIndex","CI_all","CI_close","CI_far")#
+KData = read.table(KCIFile)#
+rownames(KData) = c("NodeIndex","CI_all","CI_close","CI_far")
+rownames(GMData)
+!/usr/bin/R#
+#
+GMCIFile="../script/tmp/GM12878.p1500_d3300.c840.con.pij.all.contactindex.txt"#
+KCIFile = "../script/tmp/K562.p1500_d3300.c840.con.pij.all.contactindex.txt"#
+#
+GMData = read.table(GMCIFile,)#
+colnames(GMData) = c("NodeIndex","CI_all","CI_close","CI_far")#
+KData = read.table(KCIFile)#
+colnames(KData) = c("NodeIndex","CI_all","CI_close","CI_far")
+DiffData = cbind(GMData[,1], (GMData[,2:4] - KData[,2:4]))
+DiffData
+DiffData = cbind(GMData[,"NodeIndex"], (GMData[,2:4] - KData[,2:4]))
+DiffData
+!/usr/bin/R#
+#
+GMCIFile="../script/tmp/GM12878.p1500_d3300.c840.con.pij.all.contactindex.txt"#
+KCIFile = "../script/tmp/K562.p1500_d3300.c840.con.pij.all.contactindex.txt"#
+#
+GMData = read.table(GMCIFile,)#
+colnames(GMData) = c("NodeIndex","CI_all","CI_close","CI_far")#
+KData = read.table(KCIFile)#
+colnames(KData) = c("NodeIndex","CI_all","CI_close","CI_far")#
+#
+library(ggplot2)#
+NodeIndex = GMData[,"NodeIndex"]#
+DiffData = cbind(NodeIndex, (GMData[,2:4] - KData[,2:4]))
+DiffData
+melt(DiffData)
+!/usr/bin/R#
+rm(list=ls())#
+GMCIFile="../script/tmp/GM12878.p1500_d3300.c840.con.pij.all.contactindex.txt"#
+KCIFile = "../script/tmp/K562.p1500_d3300.c840.con.pij.all.contactindex.txt"#
+#
+GMData = read.table(GMCIFile,)#
+colnames(GMData) = c("NodeIndex","CI_all","CI_close","CI_far")#
+KData = read.table(KCIFile)#
+colnames(KData) = c("NodeIndex","CI_all","CI_close","CI_far")#
+#
+library(ggplot2)#
+NodeIndex = GMData[,"NodeIndex"]#
+df = cbind(NodeIndex, (GMData[,2:4] - KData[,2:4]))#
+df_long = melt(df)#
+#
+p <- ggplot(data=df_long,aes(x=NodeIndex,y=value,color=variable)) +#
+	theme_bw() +#
+	geom_line() + geom_point() +#
+	theme(legend.position = "none") +#
+	labs(y = "Contact Index") +#
+	scale_colour_brewer(palette="Set1") +#
+	scale_x_continuous(breaks=seq(5,NumNodes,by=5))
+!/usr/bin/R#
+rm(list=ls())#
+GMCIFile="../script/tmp/GM12878.p1500_d3300.c840.con.pij.all.contactindex.txt"#
+KCIFile = "../script/tmp/K562.p1500_d3300.c840.con.pij.all.contactindex.txt"#
+#
+GMData = read.table(GMCIFile,)#
+colnames(GMData) = c("NodeIndex","CI_all","CI_close","CI_far")#
+KData = read.table(KCIFile)#
+colnames(KData) = c("NodeIndex","CI_all","CI_close","CI_far")#
+#
+library(ggplot2)#
+NodeIndex = GMData[,"NodeIndex"]#
+df = cbind(NodeIndex, (GMData[,2:4] - KData[,2:4]))#
+df_long = melt(df)#
+#
+p <- ggplot(data=df_long,aes(x=NodeIndex,y=value,color=variable)) +#
+	theme_bw() +#
+	geom_line() + geom_point() +#
+	theme(legend.position = "none") +#
+	labs(y = "Contact Index") +#
+	scale_colour_brewer(palette="Set1")
+p
+df_long
+p <- ggplot(data=df_long,aes(x=NodeIndex,y=value,color=variable))
+p
+p + geom_line()
+p + geom_point()
+str(df_long)
+df_long = melt(df,id="NodeIndex")#
+#
+p <- ggplot(data=df_long,aes(x=NodeIndex,y=value,color=variable)) +#
+	theme_bw() +#
+	geom_line() + geom_point() +#
+	theme(legend.position = "none") +#
+	labs(y = "Contact Index") +#
+	scale_colour_brewer(palette="Set1")
+p
+dev.off()
+dev.off()
+dev.off()
+dev.off()
+p
+p + facet_grid(variable ~.)
+!/usr/bin/R#
+rm(list=ls())#
+graphics.off()#
+GMCIFile="../script/tmp/GM12878.p1500_d3300.c840.con.pij.all.contactindex.txt"#
+KCIFile = "../script/tmp/K562.p1500_d3300.c840.con.pij.all.contactindex.txt"#
+#
+GMData = read.table(GMCIFile,)#
+colnames(GMData) = c("NodeIndex","CI_all","CI_close","CI_far")#
+KData = read.table(KCIFile)#
+colnames(KData) = c("NodeIndex","CI_all","CI_close","CI_far")#
+#
+NumNodes = nrow(GMData)#
+library(ggplot2)#
+NodeIndex = GMData[,"NodeIndex"]#
+df = cbind(NodeIndex, (GMData[,2:4] - KData[,2:4]))#
+df_long = melt(df,id="NodeIndex")#
+#
+p <- ggplot(data=df_long,aes(x=NodeIndex,y=value,color=variable)) +#
+	theme_bw() +#
+	geom_line() + geom_point() +#
+	theme(legend.position = "none") +#
+	labs(y = "Contact Index") +#
+	scale_colour_brewer(palette="Set1") +#
+	scale_x_continuous(breaks=seq(5,NumNodes,by=5))#
+#
+dev.new(width=3, height=5))	#
+p + facet_grid(variable ~.)
+p <- ggplot(data=df_long,aes(x=NodeIndex,y=value,color=variable)) +#
+	theme_bw() +#
+	geom_line() + geom_point() +#
+	theme(legend.position = "none") +#
+	labs(y = "Contact Index") +#
+	scale_colour_brewer(palette="Set1") +#
+	scale_x_continuous(breaks=seq(5,NumNodes,by=5))
+dev.new(width=3, height=5)#
+p + facet_grid(variable ~.)
+!/usr/bin/R#
+rm(list=ls())#
+graphics.off()#
+# ------------------------------------------------#
+GMCIFile="../script/tmp/GM12878.p1500_d3300.c840.con.pij.all.contactindex.txt"#
+KCIFile = "../script/tmp/K562.p1500_d3300.c840.con.pij.all.contactindex.txt"#
+#
+GMData = read.table(GMCIFile,)#
+colnames(GMData) = c("NodeIndex","CI_all","CI_close","CI_far")#
+KData = read.table(KCIFile)#
+colnames(KData) = c("NodeIndex","CI_all","CI_close","CI_far")#
+#
+NumNodes = nrow(GMData)#
+library(ggplot2)#
+NodeIndex = GMData[,"NodeIndex"]#
+#
+df = cbind(NodeIndex, (GMData[,2:4] - KData[,2:4]))#
+colname(df) = c("NodeIndex","CI_all_diff","CI_close_diff","CI_far_diff"))#
+df_long = melt(df,id="NodeIndex")#
+#
+p <- ggplot(data=df_long,aes(x=NodeIndex,y=value,color=variable)) +#
+	theme_bw() +#
+	geom_line() + geom_point() +#
+	theme(legend.position = "none") +#
+	labs(y = "Contact Index Difference between GM and K") +#
+	scale_colour_brewer(palette="Set1") +#
+	scale_x_continuous(breaks=seq(5,NumNodes,by=5))#
+#
+dev.new(width=3, height=5)#
+p + facet_grid(variable ~.)
+dev.off()
+!/usr/bin/R#
+rm(list=ls())#
+graphics.off()#
+# ------------------------------------------------#
+GMCIFile="../script/tmp/GM12878.p1500_d3300.c840.con.pij.all.contactindex.txt"#
+KCIFile = "../script/tmp/K562.p1500_d3300.c840.con.pij.all.contactindex.txt"#
+#
+GMData = read.table(GMCIFile,)#
+colnames(GMData) = c("NodeIndex","CI_all","CI_close","CI_far")#
+KData = read.table(KCIFile)#
+colnames(KData) = c("NodeIndex","CI_all","CI_close","CI_far")#
+#
+NumNodes = nrow(GMData)#
+library(ggplot2)#
+NodeIndex = GMData[,"NodeIndex"]#
+#
+df = cbind(NodeIndex, (GMData[,2:4] - KData[,2:4]))#
+colname(df) = c("NodeIndex","CI_all_diff","CI_close_diff","CI_far_diff")#
+df_long = melt(df,id="NodeIndex")#
+#
+p <- ggplot(data=df_long,aes(x=NodeIndex,y=value,color=variable)) +#
+	theme_bw() +#
+	geom_line() + geom_point() +#
+	theme(legend.position = "none") +#
+	labs(y = "Contact Index Difference between GM and K") +#
+	scale_colour_brewer(palette="Set1") +#
+	scale_x_continuous(breaks=seq(5,NumNodes,by=5))#
+#
+dev.new(width=3, height=5)#
+p + facet_grid(variable ~.)
+!/usr/bin/R#
+rm(list=ls())#
+graphics.off()#
+# ------------------------------------------------#
+GMCIFile="../script/tmp/GM12878.p1500_d3300.c840.con.pij.all.contactindex.txt"#
+KCIFile = "../script/tmp/K562.p1500_d3300.c840.con.pij.all.contactindex.txt"#
+#
+GMData = read.table(GMCIFile,)#
+colnames(GMData) = c("NodeIndex","CI_all","CI_close","CI_far")#
+KData = read.table(KCIFile)#
+colnames(KData) = c("NodeIndex","CI_all","CI_close","CI_far")#
+#
+NumNodes = nrow(GMData)#
+library(ggplot2)#
+NodeIndex = GMData[,"NodeIndex"]#
+#
+df = cbind(NodeIndex, (GMData[,2:4] - KData[,2:4]))#
+colnames(df) = c("NodeIndex","CI_all_diff","CI_close_diff","CI_far_diff")#
+df_long = melt(df,id="NodeIndex")#
+#
+p <- ggplot(data=df_long,aes(x=NodeIndex,y=value,color=variable)) +#
+	theme_bw() +#
+	geom_line() + geom_point() +#
+	theme(legend.position = "none") +#
+	labs(y = "Contact Index Difference between GM and K") +#
+	scale_colour_brewer(palette="Set1") +#
+	scale_x_continuous(breaks=seq(5,NumNodes,by=5))#
+#
+dev.new(width=3, height=5)#
+p + facet_grid(variable ~.)
+df_long = melt(GMData,id="NodeIndex")#
+p <- ggplot(data=df_long,aes(x=NodeIndex,y=value,color=variable)) +#
+	theme_bw() +#
+	geom_line() + geom_point() +#
+	theme(legend.position = "none") +#
+	labs(y = "GM Contact Index") +#
+	scale_colour_brewer(palette="Set1") +#
+	scale_x_continuous(breaks=seq(5,NumNodes,by=5))#
+#
+dev.new(width=3, height=5)#
+p + facet_grid(variable ~.)
+df_long = melt(KData,id="NodeIndex")#
+p <- ggplot(data=df_long,aes(x=NodeIndex,y=value,color=variable)) +#
+	theme_bw() +#
+	geom_line() + geom_point() +#
+	theme(legend.position = "none") +#
+	labs(y = "K Contact Index") +#
+	scale_colour_brewer(palette="Set1") +#
+	scale_x_continuous(breaks=seq(5,NumNodes,by=5))#
+#
+dev.new(width=3, height=5)#
+p + facet_grid(variable ~.)
+graphics.off()
+!/usr/bin/R#
+rm(list=ls())#
+graphics.off()#
+# ------------------------------------------------#
+GMCIFile="../script/tmp/GM12878.p1500_d3300.c840.con.pij.all.contactindex.txt"#
+KCIFile = "../script/tmp/K562.p1500_d3300.c840.con.pij.all.contactindex.txt"#
+#
+GMData = read.table(GMCIFile,)#
+colnames(GMData) = c("NodeIndex","CI_all","CI_local","CI_long")#
+KData = read.table(KCIFile)#
+colnames(KData) = c("NodeIndex","CI_all","CI_local","CI_long")#
+#
+NumNodes = nrow(GMData)#
+library(ggplot2)#
+NodeIndex = GMData[,"NodeIndex"]#
+#
+# ------------------------------------------------#
+#
+df_long = melt(GMData,id="NodeIndex")#
+p <- ggplot(data=df_long,aes(x=NodeIndex,y=value,color=variable)) +#
+	theme_bw() +#
+	geom_line() + geom_point() +#
+	theme(legend.position = "none") +#
+	labs(y = "GM Contact Index") +#
+	scale_colour_brewer(palette="Set1") +#
+	scale_x_continuous(breaks=seq(5,NumNodes,by=5))#
+#
+dev.new(width=3, height=5)#
+p + facet_grid(variable ~.)#
+# ------------------------------------------------#
+df_long = melt(KData,id="NodeIndex")#
+p <- ggplot(data=df_long,aes(x=NodeIndex,y=value,color=variable)) +#
+	theme_bw() +#
+	geom_line() + geom_point() +#
+	theme(legend.position = "none") +#
+	labs(y = "K Contact Index") +#
+	scale_colour_brewer(palette="Set1") +#
+	scale_x_continuous(breaks=seq(5,NumNodes,by=5))#
+#
+dev.new(width=3, height=5)#
+p + facet_grid(variable ~.)#
+df = cbind(NodeIndex, (GMData[,2:4] - KData[,2:4]))#
+colnames(df) = c("NodeIndex","CI_all_diff","CI_local_diff","CI_long_diff")#
+df_long = melt(df,id="NodeIndex")#
+#
+p <- ggplot(data=df_long,aes(x=NodeIndex,y=value,color=variable)) +#
+	theme_bw() +#
+	geom_line() + geom_point() +#
+	theme(legend.position = "none") +#
+	labs(y = "Contact Index Difference between GM and K") +#
+	scale_colour_brewer(palette="Set1") +#
+	scale_x_continuous(breaks=seq(5,NumNodes,by=5))#
+#
+dev.new(width=3, height=5)#
+p + facet_grid(variable ~.)
+?ggplot
+df_long = melt(GMData,id="NodeIndex")#
+p <- ggplot(data=df_long,aes(x=NodeIndex,y=value,color=variable)) +#
+	theme_bw() +#
+	geom_line() + geom_point() +#
+	theme(legend.position = "none") +#
+	labs(y = "GM Contact Index") +#
+	scale_colour_brewer(palette="Set1") +#
+	scale_x_continuous(breaks=seq(5,NumNodes,by=5)) +#
+	coord_cartesian(ylim=c(0,15))#
+dev.new(width=3, height=5)#
+p + facet_grid(variable ~.)#
+# ------------------------------------------------#
+df_long = melt(KData,id="NodeIndex")#
+p <- ggplot(data=df_long,aes(x=NodeIndex,y=value,color=variable)) +#
+	theme_bw() +#
+	geom_line() + geom_point() +#
+	theme(legend.position = "none") +#
+	labs(y = "K Contact Index") +#
+	scale_colour_brewer(palette="Set1") +#
+	scale_x_continuous(breaks=seq(5,NumNodes,by=5)) +#
+	coord_cartesian(ylim=c(0,15))
+graphics.off()
+df_long = melt(GMData,id="NodeIndex")#
+p <- ggplot(data=df_long,aes(x=NodeIndex,y=value,color=variable)) +#
+	theme_bw() +#
+	geom_line() + geom_point() +#
+	theme(legend.position = "none") +#
+	labs(y = "GM Contact Index") +#
+	scale_colour_brewer(palette="Set1") +#
+	scale_x_continuous(breaks=seq(5,NumNodes,by=5)) +#
+	coord_cartesian(ylim=c(0,15))#
+dev.new(width=3, height=5)#
+p + facet_grid(variable ~.)#
+# ------------------------------------------------#
+df_long = melt(KData,id="NodeIndex")#
+p <- ggplot(data=df_long,aes(x=NodeIndex,y=value,color=variable)) +#
+	theme_bw() +#
+	geom_line() + geom_point() +#
+	theme(legend.position = "none") +#
+	labs(y = "K Contact Index") +#
+	scale_colour_brewer(palette="Set1") +#
+	scale_x_continuous(breaks=seq(5,NumNodes,by=5)) +#
+	coord_cartesian(ylim=c(0,15))
+!/usr/bin/R#
+rm(list=ls())#
+graphics.off()#
+# ------------------------------------------------#
+GMCIFile="../script/tmp/GM12878.p1500_d3300.c840.con.pij.all.contactindex.txt"#
+KCIFile = "../script/tmp/K562.p1500_d3300.c840.con.pij.all.contactindex.txt"#
+#
+GMData = read.table(GMCIFile,)#
+colnames(GMData) = c("NodeIndex","CI_all","CI_local","CI_long")#
+KData = read.table(KCIFile)#
+colnames(KData) = c("NodeIndex","CI_all","CI_local","CI_long")#
+#
+NumNodes = nrow(GMData)#
+library(ggplot2)#
+NodeIndex = GMData[,"NodeIndex"]#
+#
+# ------------------------------------------------#
+#
+df_long = melt(GMData,id="NodeIndex")#
+p <- ggplot(data=df_long,aes(x=NodeIndex,y=value,color=variable)) +#
+	theme_bw() +#
+	geom_line() + geom_point() +#
+	theme(legend.position = "none") +#
+	labs(y = "GM Contact Index") +#
+	scale_colour_brewer(palette="Set1") +#
+	scale_x_continuous(breaks=seq(5,NumNodes,by=5)) +#
+	coord_cartesian(ylim=c(0,15))#
+dev.new(width=3, height=5)#
+p + facet_grid(variable ~.)#
+# ------------------------------------------------#
+df_long = melt(KData,id="NodeIndex")#
+p <- ggplot(data=df_long,aes(x=NodeIndex,y=value,color=variable)) +#
+	theme_bw() +#
+	geom_line() + geom_point() +#
+	theme(legend.position = "none") +#
+	labs(y = "K Contact Index") +#
+	scale_colour_brewer(palette="Set1") +#
+	scale_x_continuous(breaks=seq(5,NumNodes,by=5)) +#
+	coord_cartesian(ylim=c(0,15))#
+dev.new(width=3, height=5)#
+p + facet_grid(variable ~.)#
+df = cbind(NodeIndex, (GMData[,2:4] - KData[,2:4]))#
+colnames(df) = c("NodeIndex","CI_all_diff","CI_local_diff","CI_long_diff")#
+df_long = melt(df,id="NodeIndex")#
+#
+p <- ggplot(data=df_long,aes(x=NodeIndex,y=value,color=variable)) +#
+	theme_bw() +#
+	geom_line() + geom_point() +#
+	theme(legend.position = "none") +#
+	labs(y = "Contact Index Difference between GM and K") +#
+	scale_colour_brewer(palette="Set1") +#
+	scale_x_continuous(breaks=seq(5,NumNodes,by=5))#
+#
+dev.new(width=3, height=5)#
+p + facet_grid(variable ~.)
+df = cbind(NodeIndex, (GMData[,2:4] - KData[,2:4]))#
+colnames(df) = c("NodeIndex","CI_all_diff","CI_local_diff","CI_long_diff")#
+df_long = melt(df,id="NodeIndex")#
+p <- ggplot(data=df_long,aes(x=NodeIndex,y=value,color=variable)) +#
+	theme_bw() +#
+	geom_line() + geom_point() +#
+	theme(legend.position = "none") +#
+	labs(y = "Contact Index Difference between GM and K") +#
+	scale_colour_brewer(palette="Set1") +#
+	scale_x_continuous(breaks=seq(5,NumNodes,by=5)) +#
+	coord_cartesian(ylim=c(0,15))#
+#
+dev.new(width=3, height=5)#
+p + facet_grid(variable ~.)
+df_long = melt(GMData,id="NodeIndex")#
+p <- ggplot(data=df_long,aes(x=NodeIndex,y=value,color=variable)) +#
+	theme_bw() +#
+	geom_line() + geom_point() +#
+	theme(legend.position = "none") +#
+	labs(y = "GM Contact Index") +#
+	scale_colour_brewer(palette="Set1") +#
+	scale_x_continuous(breaks=seq(5,NumNodes,by=5)) +#
+	coord_cartesian(ylim=c(0,15))#
+dev.new(width=3, height=5)#
+# p + facet_grid(variable ~.)#
+p + facet_grid(. ~ variable)#
+#
+# ------------------------------------------------#
+df_long = melt(KData,id="NodeIndex")#
+p <- ggplot(data=df_long,aes(x=NodeIndex,y=value,color=variable)) +#
+	theme_bw() +#
+	geom_line() + geom_point() +#
+	theme(legend.position = "none") +#
+	labs(y = "K Contact Index") +#
+	scale_colour_brewer(palette="Set1") +#
+	scale_x_continuous(breaks=seq(5,NumNodes,by=5)) +#
+	coord_cartesian(ylim=c(0,15))#
+dev.new(width=3, height=5)#
+# p + facet_grid(variable ~.)#
+p + facet_grid(. ~ variable )
+df_long = melt(GMData,id="NodeIndex")#
+p <- ggplot(data=df_long,aes(x=NodeIndex,y=value,color=variable)) +#
+	theme_bw() +#
+	geom_line() + geom_point() +#
+	theme(legend.position = "none") +#
+	labs(y = "GM Contact Index") +#
+	scale_colour_brewer(palette="Set1") +#
+	scale_x_continuous(breaks=seq(5,NumNodes,by=5)) +#
+	coord_cartesian(ylim=c(0,15))#
+# dev.new(width=3, height=5)#
+# p + facet_grid(variable ~.)#
+dev.new(width=10, height=2)#
+p + facet_grid(. ~ variable)#
+#
+# ------------------------------------------------#
+df_long = melt(KData,id="NodeIndex")#
+p <- ggplot(data=df_long,aes(x=NodeIndex,y=value,color=variable)) +#
+	theme_bw() +#
+	geom_line() + geom_point() +#
+	theme(legend.position = "none") +#
+	labs(y = "K Contact Index") +#
+	scale_colour_brewer(palette="Set1") +#
+	scale_x_continuous(breaks=seq(5,NumNodes,by=5)) +#
+	coord_cartesian(ylim=c(0,15))#
+# dev.new(width=3, height=5)#
+# p + facet_grid(variable ~.)#
+dev.new(width=10, height=2)#
+p + facet_grid(. ~ variable )
+df_long = melt(GMData,id="NodeIndex")#
+p <- ggplot(data=df_long,aes(x=NodeIndex,y=value,color=variable)) +#
+	theme_bw() +#
+	geom_line() + geom_point() +#
+	theme(legend.position = "none") +#
+	labs(y = "GM Contact Index") +#
+	scale_colour_brewer(palette="Set1") +#
+	scale_x_continuous(breaks=seq(5,NumNodes,by=5)) +#
+	coord_cartesian(ylim=c(0,14))#
+dev.new(width=3, height=5)#
+p + facet_grid(variable ~.)#
+# dev.new(width=10, height=2)#
+# p + facet_grid(. ~ variable)#
+#
+# ------------------------------------------------#
+df_long = melt(KData,id="NodeIndex")#
+p <- ggplot(data=df_long,aes(x=NodeIndex,y=value,color=variable)) +#
+	theme_bw() +#
+	geom_line() + geom_point() +#
+	theme(legend.position = "none") +#
+	labs(y = "K Contact Index") +#
+	scale_colour_brewer(palette="Set1") +#
+	scale_x_continuous(breaks=seq(5,NumNodes,by=5)) +#
+	coord_cartesian(ylim=c(0,14))#
+dev.new(width=3, height=5)#
+p + facet_grid(variable ~.)#
+# dev.new(width=10, height=2)#
+# p + facet_grid(. ~ variable )
+df = cbind(NodeIndex, (GMData[,2:4] - KData[,2:4]))#
+colnames(df) = c("NodeIndex","CI_all_diff","CI_local_diff","CI_long_diff")#
+df_long = melt(df,id="NodeIndex")#
+p <- ggplot(data=df_long,aes(x=NodeIndex,y=value,color=variable)) +#
+	theme_bw() +#
+	geom_line() + geom_point() +#
+	theme(legend.position = "none") +#
+	labs(y = "Contact Index Difference between GM and K") +#
+	scale_colour_brewer(palette="Set1") +#
+	scale_x_continuous(breaks=seq(5,NumNodes,by=5)) +#
+#
+dev.new(width=3, height=5)#
+p + facet_grid(variable ~.)

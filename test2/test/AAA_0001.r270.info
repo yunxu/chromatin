@@ -1,0 +1,159 @@
+#
+# Delcx 4.1 (/Users/yunxu/workspace/projects/chromatin/other/alpha/build/bin/delcx), on 10-8-169-159.dhcp.uic.edu, Sun Nov 25 13:52:40 2012
+#
+  Data: AAA_0001.r270
+  Title: AAA_0001.r270
+y Simplicial Complex
+          54 . vertices
+       0.000 . cpu secs
+         790 . transform mainloops
+         373 . triangle-to-edge flips
+         234 . edge-to-triangle flips
+           0 . vertex flips
+         183 . skips
+         256 . tetrahedra (was: 256, flat: 0)
+         526 . triangles (was: 526, last: 526, max: 928)
+         323 . edges (was: 323)
+        7574 . Orgs
+       67567 . Syms
+       42613 . Enexts
+       62375 . Fnexts
+       11138 . Fsplices
+* External facets
+          46 . tetrahedra
+          80 . triangles
+          38 . edges
+           0 . Vertices not inserted
+       0.000 . Average search length when not inserted
+          84 . In-sphere tests
+* Convex hull
+          16 . vertices (was: 16)
+          42 . edges (was: 42)
+          28 . triangles (was: 28)
+* Lia counters
+       67998 . Lia mul calls
+       66901 . Lia mul elops
+       31319 . Lia add calls
+       32284 . Lia add elops
+       55701 . Lia sub calls
+       57835 . Lia sub elops
+           2 . Lia maximum digit
+* SoS lambda5, non-zero depth counters
+        1406
+* SoS lambda4, non-zero depth counters
+        2342
+* SoS lambda3_col, non-zero depth counters
+         730
+          25
+           5
+           5
+* SoS lambda2, non-zero depth counters
+         501
+           5
+* SoS minor evaluations
+        1406 . 5-by-5
+        2900 . 4-by-4
+         730 . 3-by-3
+         536 . 2-by-2
+* SoS summary
+           3 . max depth
+    0.008034 . mean depth
+* SoS infinite tests - lambda4
+        2056 . 0 infinite points
+         570 . 1 infinite points
+         435 . 2 infinite points
+          11 . 3 infinite points
+           0 . 4 infinite points
+* SoS infinite tests - lambda5
+        1406 . 0 infinite points
+         286 . 1 infinite points
+         160 . 2 infinite points
+          66 . 3 infinite points
+           1 . 4 infinite points
+* Flip vs. Search
+
+    Positive3 tests
+                             Number of Infinite Points
+			   0        1        2        3
+	Search		     353      306      357        0 
+	Succ. flip	    1302      213       63        9 
+	Unsucc. flip	     401       51       15        2 
+
+* Miscellaneous
+      19.093 . % UBT utilization
+          36 . bytes per triangle
+       0.009 . Mb SoS
+      13.747 . Mb Trist + Cascade record (36 bytes per triangle)
+       0.125 . Mb malloc, total (arena: 17592186044416.000 Mb)
+        0.00 .  CPU secs, delcx total
+        0.01 . real secs, delcx total
+#
+# Mkalf 4.0 (/Users/yunxu/workspace/projects/chromatin/other/alpha/build/bin/mkalf), on 10-8-169-159.dhcp.uic.edu, Sun Nov 25 13:52:40 2012
+#
+  Data: AAA_0001.r270
+  Title: AAA_0001.r270
+          54 . vertices
+        1105 . DT faces
+* Spectrum and masterlist
+         716 . rho-values
+         664 . alpha-ranks (spectrum)
+        2436 . masterlist entries
+       3.669 . average sublist length
+* Work and memory
+        7156 . ratio comparisons (1.05 * n*ld(n), n = 716)
+        1436 . Lia pool objects (1 blocks)
+         2.0 . average object length (in Lia digits)
+       0.033 . Mb Lia pool
+       0.001 . Mb t_hash_table         331 *  4 bytes
+       0.002 . Mb e_hash_table         409 *  4 bytes
+       0.001 . Mb       t_rank F       332 *  4 bytes
+       0.006 . Mb       f_rank F       527 * 12 bytes
+       0.005 . Mb       e_rank F       410 * 12 bytes
+       0.001 . Mb       v_rank F        55 * 12 bytes
+       0.003 . Mb     spectrum F       665 *  4 bytes
+       0.003 . Mb     master_p         665 *  4 bytes
+       0.009 . Mb  master_node F      2437 *  4 bytes
+       0.002 . Mb  master_type F      2437 *  1 bytes
+       0.035 . Mb   tlist_node t      1160 * 32 bytes
+       0.001 . Mb   tlist_type t      1160 *  1 bytes
+       0.003 . Mb        table t       717 *  4 bytes
+       0.023 . Mb   mheap_node t      2966 *  8 bytes
+       0.003 . Mb   mheap_type t      2966 *  1 bytes
+       0.003 . Mb         auxi t       719 *  4 bytes
+       0.245 . Mb total temp memory
+* Lia counters
+      158296 . lia_mul calls
+      205995 . lia_mul elops
+       54266 . Lia add calls
+       60093 . Lia add elops
+      120207 . Lia sub calls
+      140245 . Lia sub elops
+           4 . Lia maximum digit
+* Primitive calls
+          54 . Rho/Size0
+         164 . Rho/Size1
+         242 . Rho/Size2
+         256 . Rho/Size3
+         646 . Hidden0
+        1245 . Hidden1
+         908 . Hidden2
+* Minor evaluations
+           0 . 0-by-0
+           0 . 1-by-1
+        7865 . 2-by-2
+       13522 . 3-by-3
+        4912 . 4-by-4
+           0 . 5-by-5
+* Hashing
+        5.22 .  edge fnexts/query,      16914 /       3240
+        2.24 .  edge probes/query,       7244 /       3240, load factor 0.79
+        1.53 . tetra probes/query,       1568 /       1024, load factor 0.77
+           9 . prime tests
+          47 . prime modulos
+* Miscellaneous
+       0.012 . Mb SoS (parameter matrix)
+       0.018 . Mb Trist (36 bytes per triangle)
+       0.033 . Mb Alf
+       0.332 . Mb malloc, total (arena: 17592186044416.000 MB)
+        0.02 .  CPU secs, mkalf total
+        0.03 . real secs, mkalf total
